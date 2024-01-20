@@ -1,4 +1,4 @@
-// sketch.js - Mini rav light show at home
+// sketch.js - Mini rave show at home
 // Author: Stephanie Ramirez
 // Date: January 19, 2024
 
