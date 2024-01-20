@@ -1,67 +1,97 @@
-// sketch.js - purpose and description here
-// Author: Your Name
-// Date:
+// sketch.js - Mini rav light show at home
+// Author: Stephanie Ramirez
+// Date: January 19, 2024
 
-// Here is how you might set up an OOP p5.js project
-// Note that p5.js looks for a file called sketch.js
+// Delete: Reset canvas
 
-// Constants - User-servicable parts
-// In a longer project I like to put these in a separate file
-const VALUE1 = 1;
-const VALUE2 = 2;
-
-// Globals
-let myInstance;
-let canvasContainer;
-
-class MyClass {
-    constructor(param1, param2) {
-        this.property1 = param1;
-        this.property2 = param2;
-    }
-
-    myMethod() {
-        // code to run when method is called
-    }
-}
-
-// setup() function is called once when the program starts
+// Set up the canvas
 function setup() {
-    // place our canvas, making it fit our container
-    canvasContainer = $("#canvas-container");
-    let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
-    canvas.parent("canvas-container");
-    // resize canvas is the page is resized
-    $(window).resize(function() {
-        console.log("Resizing...");
-        resizeCanvas(canvasContainer.width(), canvasContainer.height());
-    });
-    // create an instance of the class
-    myInstance = new MyClass(VALUE1, VALUE2);
-
-    var centerHorz = windowWidth / 2;
-    var centerVert = windowHeight / 2;
+    // Set up canvas with html settings
+    let canvasContainer = select("#canvas-container");
+    let canvas = createCanvas(800, 500);
+    canvas.parent(canvasContainer);
+    background(0, 0, 0);
 }
 
-// draw() function is called repeatedly, it's the main animation loop
+// Counter for tracking the number of lines
+let lineCounter = 0; 
+
 function draw() {
-    background(220);    
-    // call a method on the instance
-    myInstance.myMethod();
+    // Set the number of rows and arrowheads in each row
+    let numRows = 5;
+    let numArrowheads = 5;
 
-    // Put drawings here
-    var centerHorz = canvasContainer.width() / 2 - 125;
-    var centerVert = canvasContainer.height() / 2 - 125;
-    fill(234, 31, 81);
-    noStroke();
-    rect(centerHorz, centerVert, 250, 250);
-    fill(255);
-    textStyle(BOLD);
-    textSize(140);
-    text("p5*", centerHorz + 10, centerVert + 200);
+    // Calculate the spacing between rows and arrowheads
+    let rowSpacing = height / (numRows + 1);
+    let arrowSpacing = width / (numArrowheads + 1);
+
+    // Gradient (Blue to Red) arrowheads based on the mouse location
+    let gradientColorBlue = color(0, 0, 255);
+    let gradientColorRed = color(255, 0, 0);
+
+    // Draw random lines
+    if (lineCounter < 500) {
+    for (let i = 0; i < 5; i++) {
+        let x1 = random(width);
+        let y1 = random(height);
+        let x2 = random(width);
+        let y2 = random(height);
+
+        let lineColor = color(random(255), random(255), random(255));
+        strokeWeight(1);
+        stroke(lineColor);
+        line(x1, y1, x2, y2);
+
+        lineCounter++;
+    }
+    }
+
+    // Loop through the number of rows
+    for (let row = 1; row <= numRows; row++) {
+    // Loop through the number of arrowheads in each row
+    for (let i = 1; i <= numArrowheads; i++) {
+        // Calculate the x and y coordinates for each arrowhead
+        let x = i * arrowSpacing;
+        let y = row * rowSpacing;
+
+        // Calculate the distance between the arrowhead and the mouse
+        let distance = dist(mouseX, mouseY, x, y);
+
+        // Set detection radius
+        let proximity = 200;
+
+        // Map the distance to a color gradient
+        let mappedColor = map(distance, 0, proximity, 1, 0);
+
+        // Switch between blue and red
+        let switchColor = lerpColor(gradientColorBlue, gradientColorRed, mappedColor);
+
+        // Set the fill color
+        fill(switchColor);
+
+        // Draw an arrowhead pointing towards the mouse
+        drawArrowhead(x, y, 30, atan2(mouseY - y, mouseX - x));
+    }
+    }
 }
 
-// mousePressed() function is called once after every time a mouse button is pressed
-function mousePressed() {
-    // code to run when mouse is pressed
+// Draw an arrowhead
+function drawArrowhead(x, y, size, angle) {
+    push();
+    translate(x, y);
+    rotate(angle);
+    beginShape();
+    vertex(0, -size / 2);
+    vertex(size, 0);
+    vertex(0, size / 2);
+    endShape(CLOSE);
+    pop();
 }
+
+// Reset Canvas
+function keyReleased() {
+    if (keyCode == DELETE || keyCode == BACKSPACE) {
+    background(0);
+    lineCounter = 0; // Reset the line counter
+    }
+}  
