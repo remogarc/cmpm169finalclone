@@ -173,3 +173,27 @@ class Particles {
     ellipse(this.pos.x, this.pos.y, this.w);
     }
 }
+// Reset Canvas
+function keyPressed() {
+    if (keyCode == DELETE || keyCode == BACKSPACE) {
+      // Reset seed
+      seed = round(random(1000)); // You can adjust the range as needed
+      // Restart the audio
+      audio.stop();
+      audio.play();
+      // Reset particles
+      particles = [];
+      // Clear the canvas
+      clear();
+      // Laser setup
+      s = 1.4 * (width + height) / eq;
+      pi = PI * 2;
+      csp = ((random(1, pi) / PI) / s + 1) % 255;
+      sp = cos(seed + csp) % 255;
+      sp1 = sin(seed + csp) % 255;
+      sp = sp / 2;
+      sp1 = sp1 / 2;
+      csp = tan(Number(sp, sp1)) + pi;
+      colorMode(HSB, 255, 255, 255, 255);
+    }
+}
