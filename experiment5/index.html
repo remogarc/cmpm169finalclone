@@ -2,7 +2,7 @@
 <html>
 <head>
 	<!-- This title is used for tabs and bookmarks -->
-	<title>Experiment X - Subject/Topic</title>
+	<title>Experiment 5 - 3D Graphics</title>
 
 	<!-- Use UTF character set, a good idea with any webpage -->
 	<meta charset="UTF-8" />
@@ -28,33 +28,49 @@
 	<!-- Style this page by changing the CSS in ../css/site.css or css/experiment.css -->
 	<main id="content">
 		<section>
-			<h1>Experiment X - Subject/Topic</h1>
+			<h1>Experiment 5 - 3D Graphics</h1>
 			<div class="minor-section">
 				<h2>Imitate</h2>
-				<p>To develop artistic creativity in coding, it can be helpful to start by studying and learning from existing examples. This might involve reviewing code written by others, analyzing successful techniques, or even copying and modifying code to better understand how it works. By imitating and learning from existing techniques and strategies, we can gain a better understanding of what has been done before and what is possible, and identify opportunities for improvement and innovation.</p>
-				<p>What code did you start with? (You don't need to provide the code itself, but where did you start?) Document this step briefly.</p>
+				<p>For this experiment I wanted to take inspiration from my childhood. I would love going to the science centers as a little kid, but I would especially love the exhibitions about space. For this experiment I wanted to create 3D planets orbiting in space.</p>
+				<img src="../img/space.png" alt="spaceExample" width = "400">
+				<p>I went searching on open processing for some examples and I came across <a href="https://openprocessing.org/sketch/1608591 ">“Planets”</a> by Richard Bourne. This would serve as my starting point as I want to modify this example by giving it an interesting background. 
+				</p>
 			</div>
 
 			<div class="minor-section">
 				<h2>Integrate</h2>
-				<p>After learning from existing techniques and strategies, we can build upon that foundation by combining elements from different sources. This might involve combining elements from different programming languages, using libraries or frameworks in new ways, or bringing together techniques from different fields or disciplines. By integrating and combining elements from different sources, we can create something new and unique.</p>
-				<p>How did you extend the code or combine with another technique to make something new? Document this step.</p>
+				<p>My first step was to recreate the spheres to represent the planets. This was pretty simple to do using the sphere function already provided by the library. I just need to tell the sphere their color, size, and where to be placed.</p>
+				<img src="../img/spaceStart.png" alt="spaceStart" width = "400">
+				<p>I am using the sun as my center, so I translate the moon and earth based on the sun's location. Each planet has its own rotation it is doing that is also connected to the rotation of the whole canvas. 
+					This creates the effect of the planets orbiting around the sun. With this set up I can quickly copy and paste to create more planets. 
+					It is probably best to turn this into a function later on if I want to add more planets. 
+				</p>
+
 			</div>
 
 			<div class="minor-section">
 				<h2>Innovate</h2>
-				<p>Finally, we can introduce new or original ideas to our coding process by thinking creatively and pushing the boundaries. This might involve developing entirely new techniques or approaches, or using existing techniques in new and creative ways. By innovating and introducing new ideas, we can create art that is truly groundbreaking.</p>
-				<p>How did you use the code as a jumping off point to create something truly unique and novel? Document this step thoroughly.</p>
+				<p>With my planets implemented, the next step for me is to add a background for the planets. Right now it's just a black background, but I want to add stars and potentially blackholes and asteroids. 
+					My first step is to get glowing stars to surround the planets. I looked for some examples on open processing and did some google searches. 
+					I came across some interesting examples but the one I was most honed in on was <a href="https://openprocessing.org/sketch/2036451">“Stars2”</a> by HJ on open processing.
+					This was one of the more realistic looking examples I found, but I wanted to make a few modifications to it. I wanted to add a twinkle effect to the glowing stars. The first thing I did was get the star implemented into the canvas. Currently I am just passing in for 1000 stars to be made but this number will need to be adjusted at the end.
+					<img src="../img/spaceStars.png" alt="spaceStars" width = "400">
+				</p>
+				<p>However, since I am using orbital controls the stars appear to be on a flat 2d surface. At certain angles you can't see the stars at all. I needed to figure out how to get the stars to appear more like it is in a 3D space. To solve this the stars are set up as an array of vectors to represent their positions. 
+					The stars are then drawn in the background as points using the sphere function. 
+					It virtually looks the same except the stars are now spheres rather than flat circles. With this issue resolved I can go back to focusing on getting the stars to twinkle now. To achieve this desired effect I used the noise function. 
+					The stars felt a bit dim so to brighten them I gave each one a point light. With this completed I wanted to try to add in more to the background.
+				</p>
+				<p>I wanted to add a shoot star effect. This was simple to get implemented as it meant copying the code I had to create stars and a translation that is constantly updated to move the stars across the canvas. I still wasn't satisfied with the results so I did some searching to look at more space images for inspiration. 
+					I realized that I could leave all the stars white. I wanted to add some color to some of the stars.
+					<img src="../img/spaceStarColor.png" alt="starColor" width = "400">
+				</p>
 			</div>
 
 			<div class="minor-section">
 				<h2>Reflection</h2>
-				<p>Each person that worked on the code should reflect on the process, the difficulties, and the successes of the experiment. Here's where you can put your reflections.</p>
-				<ul>
-					<li>What part of the project you contributed</li>
-					<li>A reflection on your work and the work of the team</li>
-					<li>Brief highs and lows</li>
-				</ul>
+				<p>I completed this experiment independently. This experiment wasn’t too difficult to complete. Once I reviewed the multiple examples from open processing and p5.js, I got a pretty good idea of how the objects work in a 3D space. The experiment consisted of making multiple spheres to create my space environment. 
+					Trying to keep it as realistic I added different color stars that had a twinkling effect.</p>
 			</div>
 
 			<div class="minor-section">
@@ -62,10 +78,13 @@
 				<div id="canvas-container">
 					<!-- canvas will be added here -->
 				</div>
+				<p>Control with mouse</p>
 			</div>
 		</section>
 		<nav id="links">
-			<!-- Put links to other pages (including the homepage) here. -->
+			<ul>
+				<li><a href="../index.html">Home</a></li>
+			</ul>
 		</nav>
 	</main>
 </body>
