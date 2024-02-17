@@ -1,67 +1,211 @@
-// sketch.js - purpose and description here
-// Author: Your Name
-// Date:
+// sketch.js - Season Changing
+// Author: Stephanie Ramirez
+// Date: February 17th, 2024
 
-// Here is how you might set up an OOP p5.js project
-// Note that p5.js looks for a file called sketch.js
+// Variables related to season change
+var counter = 0;
+var seasonColor;
+var targetColor;
 
-// Constants - User-servicable parts
-// In a longer project I like to put these in a separate file
-const VALUE1 = 1;
-const VALUE2 = 2;
+// Variables for smooth color transition
+var transitionDuration = 10000; // 10 seconds
+var transitionStartTime;
 
-// Globals
-let myInstance;
-let canvasContainer;
+// Variables for fading text
+var fadeDuration = 4000; // 2 seconds
+var fadeStartTime = 0;
+var fadeText = getSeasonText();
 
-class MyClass {
-    constructor(param1, param2) {
-        this.property1 = param1;
-        this.property2 = param2;
+// Variables related to leaves
+var leaves = [];
+var wind;
+
+var joints = [];
+var diff;
+var yoff = 0;
+var seed = 5;
+
+// Tree Creation
+function Branch(x, y, rot, len, diff, xoff) {
+    joint_id = joints.length;
+
+    var sw = map(len, 0, 200, 1, 20);
+    strokeWeight(sw);
+    stroke(90, 49, 57);
+
+    var nPoint = p5.Vector.fromAngle(rot).mult(len);
+    var nx = x + nPoint.x;
+    var ny = y + nPoint.y;
+
+    rot = p5.Vector.fromAngle(rot).mult(2).heading();
+    line(x, y, nx, ny);
+    joints.push([nx, ny]);
+
+    for (var j = 0; j < joints.length; j++) {
+        angle = map(noise(xoff + j / 10, yoff), 0, 1, radians(0), radians(60));
     }
 
-    myMethod() {
-        // code to run when method is called
+    len = len * 2 / 3 * map(noise(diff), 0, 1, 0.5, 1.5);
+
+    if (len > 10) {
+        Branch(nx, ny, rot + angle, len, diff + 0.3, xoff);
+        Branch(nx, ny, rot - angle, len, diff + 1, xoff);
+    } else {
+        // Add first layer of clusters
+        for (var i = 0; i < 5; i++) {
+        var clusterX = nx + random(-10, 10);
+        var clusterY = ny + random(-10, 10);
+        leaves.push(new Leaf(clusterX, clusterY));
+        }
+        // Add second layer of clusters
+        for (var i = 0; i < 5; i++) {
+        var clusterX = nx + random(-20, 20);
+        var clusterY = ny + random(-20, 20);
+        leaves.push(new Leaf(clusterX, clusterY));
+        }
+
+        // Add third layer of clusters
+        for (var i = 0; i < 5; i++) {
+        var clusterX = nx + random(-30, 30);
+        var clusterY = ny + random(-30, 30);
+        leaves.push(new Leaf(clusterX, clusterY));
+        }
     }
 }
 
-// setup() function is called once when the program starts
+// Create Leaf
+function Leaf(x, y) {
+    this.position = createVector(x, y);
+    this.velocity = createVector(random(-1, 1), random(-1, 0));
+    this.acceleration = createVector(0, 0.05);
+    // Get a random letter for the leaf
+    this.leafLetter = getRandomLetter();
+    // Get color based on the season
+    this.leafColor = getLeafColor();
+
+    this.update = function() {
+        this.velocity.add(this.acceleration);
+        this.position.add(this.velocity);
+    };
+
+    this.display = function() {
+        fill(this.leafColor);
+        noStroke();
+        textSize(10);
+        textAlign(CENTER, CENTER);
+        text(this.leafLetter, this.position.x, this.position.y);
+    };
+
+    // Helper function to get a random letter
+    function getRandomLetter() {
+        var possibleLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        return possibleLetters.charAt(floor(random(possibleLetters.length)));
+    }
+
+    // Helper function to get color based on the season
+    function getLeafColor() {
+        if (counter % 5 == 0) {
+        // Spring
+        return color(254, 163, 226); // Pink color for spring leaves
+        } else if (counter % 5 == 1) {
+        // Summer
+        return color(194, 255, 106); // Yellow color for summer leaves
+        } else if (counter % 5 == 2) {
+        // Autumn
+        return color(255, 86, 67); // Red color for autumn leaves
+         } else {
+        // Winter
+        return color(255, 255, 255); // Default color for winter and falling leaves
+        }
+    }
+}
+
+// Timer for season changing
+function timeIt() {
+    counter++;
+    transitionStartTime = millis();
+    fadeStartTime = millis(); // Reset fade start time on season change
+    fadeText = getSeasonText(); // Set fade text for the new season
+}
+
+// Change the season background
+function changeSeason() {
+    if (counter % 5 == 0) {
+        // Spring
+        targetColor = color(115, 182, 5);
+    } else if (counter % 5 == 1) {
+        // Summer
+        targetColor = color(223, 183, 0);
+    } else if (counter % 5 == 2) {
+        // Autumn
+        targetColor = color(226, 127, 2);
+    } else if (counter % 5 == 3 || counter % 5 == 4) {
+        // Winter
+        targetColor = color(163, 252, 254);
+    }
+
+    if (!seasonColor) {
+        seasonColor = targetColor;
+    }
+
+    // Smoothly transition to the target color
+    var elapsed = millis() - (transitionStartTime || 0);
+    var progress = constrain(elapsed / transitionDuration, 0, 1);
+    seasonColor = lerpColor(seasonColor, targetColor, progress);
+
+    // Set background color
+    background(seasonColor);
+
+    // Display fading text
+    displayFadingText();
+}
+
+// Display fading text indicating the current season
+function displayFadingText() {
+    var elapsed = millis() - fadeStartTime;
+    var alpha = map(elapsed, 0, fadeDuration, 255, 0);
+    fill(255, 255, 255, alpha);
+    textSize(64);
+    textAlign(CENTER, CENTER);
+    text(fadeText, width / 2, height / 2);
+}
+
+// Get the text indicating the current season
+function getSeasonText() {
+    if (counter % 5 == 0) {
+        return "Spring";
+    } else if (counter % 5 == 1) {
+        return "Summer";
+    } else if (counter % 5 == 2) {
+        return "Autumn";
+    } else if (counter % 5 == 3 || counter % 5 == 4) {
+        return "Winter";
+    }
+}
+
+// Setup tree and background
 function setup() {
-    // place our canvas, making it fit our container
-    canvasContainer = $("#canvas-container");
-    let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
-    canvas.parent("canvas-container");
-    // resize canvas is the page is resized
-    $(window).resize(function() {
-        console.log("Resizing...");
-        resizeCanvas(canvasContainer.width(), canvasContainer.height());
-    });
-    // create an instance of the class
-    myInstance = new MyClass(VALUE1, VALUE2);
-
-    var centerHorz = windowWidth / 2;
-    var centerVert = windowHeight / 2;
+    let canvasContainer = select("#canvas-container");
+    let canvas = createCanvas(600, 600);
+    canvas.parent(canvasContainer);
+    diff = random(0, 5);
+    transitionStartTime = millis();
+    fadeStartTime = millis();
+    setInterval(timeIt, 5500);
 }
 
-// draw() function is called repeatedly, it's the main animation loop
 function draw() {
-    background(220);    
-    // call a method on the instance
-    myInstance.myMethod();
+    joints = [];
+    leaves = [];
+    randomSeed(seed);
+    yoff += 0.002;
+    // Create background based on season
+    changeSeason();
+    Branch(width / 2, height, 3 * PI / 2, 160, diff, 0);
 
-    // Put drawings here
-    var centerHorz = canvasContainer.width() / 2 - 125;
-    var centerVert = canvasContainer.height() / 2 - 125;
-    fill(234, 31, 81);
-    noStroke();
-    rect(centerHorz, centerVert, 250, 250);
-    fill(255);
-    textStyle(BOLD);
-    textSize(140);
-    text("p5*", centerHorz + 10, centerVert + 200);
-}
-
-// mousePressed() function is called once after every time a mouse button is pressed
-function mousePressed() {
-    // code to run when mouse is pressed
+    // Update and display leaves
+    for (var i = 0; i < leaves.length; i++) {
+        leaves[i].update();
+        leaves[i].display();
+    }
 }
