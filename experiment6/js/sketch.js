@@ -8,11 +8,11 @@ var seasonColor;
 var targetColor;
 
 // Variables for smooth color transition
-var transitionDuration = 10000; // 10 seconds
+var transitionDuration = 10000; // 10 sec
 var transitionStartTime;
 
 // Variables for fading text
-var fadeDuration = 4000; // 2 seconds
+var fadeDuration = 4000; // 4 sec
 var fadeStartTime = 0;
 var fadeText = getSeasonText();
 
@@ -63,7 +63,6 @@ function Branch(x, y, rot, len, diff, xoff) {
         var clusterY = ny + random(-20, 20);
         leaves.push(new Leaf(clusterX, clusterY));
         }
-
         // Add third layer of clusters
         for (var i = 0; i < 5; i++) {
         var clusterX = nx + random(-30, 30);
@@ -115,7 +114,7 @@ function Leaf(x, y) {
         return color(255, 86, 67); // Red color for autumn leaves
          } else {
         // Winter
-        return color(255, 255, 255); // Default color for winter and falling leaves
+        return color(255, 255, 255); // White color for winter leaves
         }
     }
 }
