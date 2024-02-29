@@ -20,6 +20,7 @@ function setup() {
     createCanvas(canvasW, canvasH,WEBGL);
     ratA = new Animal(-200,-200,rat);
     catA= new Animal(0,0,cat);
+    
 }
 
 function draw() {
@@ -33,7 +34,6 @@ function draw() {
 
    catA.update();
    catA.display();
-   console.log(catA.x)
 
    if(!ratDead && catA.intersects(ratA)) {//Make both animals move in the opposite direction when they collide
     catA.speedX *= -1;
@@ -48,12 +48,18 @@ function draw() {
 
 class Animal {//Animal class
     constructor(x, y, img) {
-      this.x = x+700;
-      this.y = y+350;
+      this.x = x+canvasW/2;
+      this.y = y+canvasH/2;
       this.img = img
       this.radius = 100;
       this.speedX = random(-5, 5);
       this.speedY = random(-5, 5);
+      while(this.speedX == 0){//Randomize speed til its not 0
+        this.speedX = random(-5,5);
+      }
+      while(this.speedY == 0){
+        this.speedY = random(-5,5);
+      }
     }
   
     // Update animal position
@@ -74,7 +80,12 @@ class Animal {//Animal class
       /*noFill();
       rectMode(CENTER);
       rect(this.x-700,this.y-350,animalWidth/2,animalHeight/2);*/
-      image(this.img, this.x-canvasW/2, this.y-canvasH/2,animalWidth,animalHeight);
+      if(this.speedX < 0){//Flip the image depending on speed
+        image(this.img, this.x-canvasW/2, this.y-canvasH/2,animalWidth,animalHeight);
+      }
+      else{
+        image(this.img, this.x-canvasW/2, this.y-canvasH/2,-animalWidth,animalHeight);
+      }
     }
   
     // Check if this animal intersects with another animal
