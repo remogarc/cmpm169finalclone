@@ -13,6 +13,7 @@ function preload(){
     cat = loadImage("../img/cat.png");
     rat = loadImage("../img/rat.png");
     backgroundImage = loadImage('../img/space.jpeg')
+    //test
 }
 
 // Set up the canvas
