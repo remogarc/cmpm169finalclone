@@ -5,9 +5,9 @@ let canvasW = 1400;
 let canvasH = 700;
 let ratA;
 let catA;
+let animalWidth = 300;
+let animalHeight = 200;
 let backgroundImage;
-let animalWidth = 600;
-let animalHeight = 400;
 let ratDead = false;
 function preload(){
     cat = loadImage("../img/cat.png");
@@ -51,7 +51,7 @@ class Animal {//Animal class
       this.x = x+canvasW/2;
       this.y = y+canvasH/2;
       this.img = img
-      this.radius = 100;
+      this.radius = animalWidth/4;
       this.speedX = random(-5, 5);
       this.speedY = random(-5, 5);
       while(this.speedX == 0){//Randomize speed til its not 0
@@ -67,10 +67,10 @@ class Animal {//Animal class
       this.x += this.speedX;
       this.y += this.speedY;
       // Bounce off the edges
-      if (this.x +100 >= canvasW|| this.x -100 <= 0 ) {
+      if (this.x +animalWidth/4 >= canvasW|| this.x -animalWidth/4 <= 0 ) {
         this.speedX *= -1;
       }
-      if (this.y +100 >= canvasH || this.y -100 <= 0) {
+      if (this.y + animalHeight/4 >= canvasH || this.y -animalHeight/4 <= 0) {
         this.speedY *= -1;
       }
     }
@@ -78,8 +78,7 @@ class Animal {//Animal class
     // Display animal
     display() {
       /*noFill();
-      rectMode(CENTER);
-      rect(this.x-700,this.y-350,animalWidth/2,animalHeight/2);*/
+      ellipse(this.x-700,this.y-350,100);*/
       if(this.speedX < 0){//Flip the image depending on speed
         image(this.img, this.x-canvasW/2, this.y-canvasH/2,animalWidth,animalHeight);
       }
