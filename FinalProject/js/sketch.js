@@ -53,14 +53,8 @@ class Animal {//Animal class
       this.y = y+canvasH/2;
       this.img = img
       this.radius = animalWidth/4;
-      this.speedX = random(-5, 5);
-      this.speedY = random(-5, 5);
-      while(this.speedX == 0){//Randomize speed til its not 0
-        this.speedX = random(-5,5);
-      }
-      while(this.speedY == 0){
-        this.speedY = random(-5,5);
-      }
+      this.speedX = random(possibleSpeeds);
+      this.speedY = random(possibleSpeeds);
     }
   
     // Update animal position
@@ -79,7 +73,7 @@ class Animal {//Animal class
     // Display animal
     display() {
       /*noFill();
-      ellipse(this.x-700,this.y-350,100);*/
+      ellipse(this.x-700,this.y-350,this.radius);*/
       if(this.speedX < 0){//Flip the image depending on speed
         image(this.img, this.x-canvasW/2, this.y-canvasH/2,animalWidth,animalHeight);
       }
