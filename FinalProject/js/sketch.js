@@ -9,6 +9,7 @@ let animalWidth = 300;
 let animalHeight = 200;
 let backgroundImage;
 let ratDead = false;
+let possibleSpeeds = [-5,5];
 function preload(){
     cat = loadImage("../img/cat.png");
     rat = loadImage("../img/rat.png");
