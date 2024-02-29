@@ -12,11 +12,11 @@ let ratDead = false;
 function preload(){
     cat = loadImage("../img/cat.png");
     rat = loadImage("../img/rat.png");
+    backgroundImage = loadImage('space.jpeg')
 }
 
 // Set up the canvas
 function setup() {
-    backgroundImage = loadImage('space.jpeg')
     createCanvas(canvasW, canvasH,WEBGL);
     ratA = new Animal(-200,-200,rat);
     catA= new Animal(0,0,cat);
