@@ -5,6 +5,7 @@ let canvasW = 1400;
 let canvasH = 700;
 let ratA;
 let catA;
+let backgroundImage;
 let animalWidth = 600;
 let animalHeight = 400;
 function preload(){
@@ -14,6 +15,7 @@ function preload(){
 
 // Set up the canvas
 function setup() {
+    backgroundImage = loadImage('space.jpeg')
     createCanvas(canvasW, canvasH,WEBGL);
     ratA = new Animal(-200,-200,rat);
     catA= new Animal(0,0,cat);
