@@ -7,6 +7,7 @@ let ratA;
 let catA;
 let animalWidth = 300;
 let animalHeight = 200;
+let possibleSpeeds = [-5,5];
 let ratDead = false;
 function preload(){
     cat = loadImage("../img/cat.png");
@@ -50,14 +51,8 @@ class Animal {//Animal class
       this.y = y+canvasH/2;
       this.img = img
       this.radius = animalWidth/4;
-      this.speedX = random(-5, 5);
-      this.speedY = random(-5, 5);
-      while(this.speedX == 0){//Randomize speed til its not 0
-        this.speedX = random(-5,5);
-      }
-      while(this.speedY == 0){
-        this.speedY = random(-5,5);
-      }
+      this.speedX = random(possibleSpeeds);
+      this.speedY = random(possibleSpeeds);
     }
   
     // Update animal position
