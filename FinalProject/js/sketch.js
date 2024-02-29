@@ -5,8 +5,10 @@ let canvasW = 1400;
 let canvasH = 700;
 let ratA;
 let catA;
+let backgroundImage;
 let animalWidth = 600;
 let animalHeight = 400;
+let ratDead = false;
 function preload(){
     cat = loadImage("../img/cat.png");
     rat = loadImage("../img/rat.png");
@@ -14,6 +16,7 @@ function preload(){
 
 // Set up the canvas
 function setup() {
+    backgroundImage = loadImage('space.jpeg')
     createCanvas(canvasW, canvasH,WEBGL);
     ratA = new Animal(-200,-200,rat);
     catA= new Animal(0,0,cat);
@@ -23,21 +26,23 @@ function draw() {
    background(220);
    imageMode(CENTER);
    //Update and display animals
-   ratA.update();
-   ratA.display();
+   if(!ratDead){
+    ratA.update();
+    ratA.display();
+   }
 
    catA.update();
    catA.display();
+   console.log(catA.x)
 
-   if (catA.intersects(ratA)) {//Make both animals move in the opposite direction when they collide
-    catA.x = catA.x * -1;
-    catA.y = catA.y * -1;
+   if(!ratDead && catA.intersects(ratA)) {//Make both animals move in the opposite direction when they collide
+    catA.speedX *= -1;
+    catA.speedY *= -1;
 
-    ratA.x = ratA.x * -1;
-    ratA.y = ratA.y * -1;
-
+    //ratA.x = ratA.x * -1;
+    //ratA.y = ratA.y * -1;
     catA.display();
-    ratA.display();
+    ratDead = true;
   }
 }
 
