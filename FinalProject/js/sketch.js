@@ -72,7 +72,7 @@ class Animal {//Animal class
     // Display animal
     display() {
       /*noFill();
-      ellipse(this.x-700,this.y-350,100);*/
+      ellipse(this.x-700,this.y-350,this.radius);*/
       if(this.speedX < 0){//Flip the image depending on speed
         image(this.img, this.x-canvasW/2, this.y-canvasH/2,animalWidth,animalHeight);
       }
