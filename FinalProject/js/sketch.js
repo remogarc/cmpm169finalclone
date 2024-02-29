@@ -12,7 +12,7 @@ let ratDead = false;
 function preload(){
     cat = loadImage("../img/cat.png");
     rat = loadImage("../img/rat.png");
-    backgroundImage = loadImage('../img/space.jpeg')
+    backgroundImage = loadImage('../img/galaxgybg.png');
     //test
 }
 
