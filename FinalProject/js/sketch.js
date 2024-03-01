@@ -5,21 +5,24 @@ let canvasW = 1400;
 let canvasH = 700;
 let ratA;
 let catA;
+let animalWidth = 300;
+let animalHeight = 200;
 let backgroundImage;
-let animalWidth = 600;
-let animalHeight = 400;
 let ratDead = false;
+let possibleSpeeds = [-5,5];
 function preload(){
     cat = loadImage("../img/cat.png");
     rat = loadImage("../img/rat.png");
+    backgroundImage = loadImage('../img/galaxgybg.png');
+    //test
 }
 
 // Set up the canvas
 function setup() {
-    backgroundImage = loadImage('space.jpeg')
     createCanvas(canvasW, canvasH,WEBGL);
     ratA = new Animal(-200,-200,rat);
     catA= new Animal(0,0,cat);
+    
 }
 
 function draw() {
@@ -33,7 +36,6 @@ function draw() {
 
    catA.update();
    catA.display();
-   console.log(catA.x)
 
    if(!ratDead && catA.intersects(ratA)) {//Make both animals move in the opposite direction when they collide
     catA.speedX *= -1;
@@ -48,12 +50,12 @@ function draw() {
 
 class Animal {//Animal class
     constructor(x, y, img) {
-      this.x = x+700;
-      this.y = y+350;
+      this.x = x+canvasW/2;
+      this.y = y+canvasH/2;
       this.img = img
-      this.radius = 100;
-      this.speedX = random(-5, 5);
-      this.speedY = random(-5, 5);
+      this.radius = animalWidth/4;
+      this.speedX = random(possibleSpeeds);
+      this.speedY = random(possibleSpeeds);
     }
   
     // Update animal position
@@ -61,10 +63,10 @@ class Animal {//Animal class
       this.x += this.speedX;
       this.y += this.speedY;
       // Bounce off the edges
-      if (this.x +100 >= canvasW|| this.x -100 <= 0 ) {
+      if (this.x +animalWidth/4 >= canvasW|| this.x -animalWidth/4 <= 0 ) {
         this.speedX *= -1;
       }
-      if (this.y +100 >= canvasH || this.y -100 <= 0) {
+      if (this.y + animalHeight/4 >= canvasH || this.y -animalHeight/4 <= 0) {
         this.speedY *= -1;
       }
     }
@@ -72,9 +74,13 @@ class Animal {//Animal class
     // Display animal
     display() {
       /*noFill();
-      rectMode(CENTER);
-      rect(this.x-700,this.y-350,animalWidth/2,animalHeight/2);*/
-      image(this.img, this.x-canvasW/2, this.y-canvasH/2,animalWidth,animalHeight);
+      ellipse(this.x-700,this.y-350,this.radius);*/
+      if(this.speedX < 0){//Flip the image depending on speed
+        image(this.img, this.x-canvasW/2, this.y-canvasH/2,animalWidth,animalHeight);
+      }
+      else{
+        image(this.img, this.x-canvasW/2, this.y-canvasH/2,-animalWidth,animalHeight);
+      }
     }
   
     // Check if this animal intersects with another animal
