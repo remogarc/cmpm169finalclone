@@ -13,7 +13,7 @@ let possibleSpeeds = [-5,5];
 function preload(){
     cat = loadImage("../img/cat.png");
     rat = loadImage("../img/rat.png");
-    backgroundImage = loadImage('../img/galaxgybg.png');
+    backgroundImage = loadImage('../img/galaxybg.png');
     //test
 }
 
@@ -26,7 +26,8 @@ function setup() {
 }
 
 function draw() {
-   background(220);
+   //background(220);
+   backgroundImage.display();
    imageMode(CENTER);
    //Update and display animals
    if(!ratDead){
