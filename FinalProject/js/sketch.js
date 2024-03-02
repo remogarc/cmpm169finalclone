@@ -10,6 +10,7 @@ let animalHeight = 200;
 let backgroundImage;
 let ratDead = false;
 let possibleSpeeds = [-5,5];
+let starArr = [];
 function preload(){
     cat = loadImage("../img/cat.png");
     rat = loadImage("../img/rat.png");
@@ -22,6 +23,13 @@ function setup() {
     createCanvas(canvasW, canvasH,WEBGL);
     ratA = new Animal(-200,-200,rat);
     catA= new Animal(0,0,cat);
+    for(let i = 0; i < 20; i++)
+    {
+     let x = random(width);
+     let y = random(height);
+     starArr.push(x);
+     starArr.push(y);
+    } 
     
 }
 
@@ -29,10 +37,12 @@ function draw() {
    //background(220);
    image(backgroundImage,0,0);
    imageMode(CENTER);
-   let x = random(width);  // Generate a random x position
-   let y = random(height); // Generate a random y position
-   stroke(255);            // Set the stroke (pixel color) to white
-   point(x, y);            // Draw a point at the random (x, y) position
+
+   for(let i = 0; i < 40; i+=2)
+   {
+    stroke(255);            // Set the stroke (pixel color) to white
+    point(starArr[i], starArr[i+1]);           // Draw a point at the random (x, y) position
+   }
    // Stars
 
 
