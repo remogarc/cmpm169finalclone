@@ -27,7 +27,7 @@ function setup() {
 
 function draw() {
    //background(220);
-   img(backgroundImage,0,0);
+   image(backgroundImage,0,0);
    imageMode(CENTER);
    //Update and display animals
    if(!ratDead){
