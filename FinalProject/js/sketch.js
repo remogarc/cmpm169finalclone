@@ -23,10 +23,10 @@ function setup() {
     createCanvas(canvasW, canvasH,WEBGL);
     ratA = new Animal(-200,-200,rat);
     catA= new Animal(0,0,cat);
-    for(let i = 0; i < 20; i++)
+    for(let i = 0; i < 70; i++)
     {
-     let x = random(width);
-     let y = random(height);
+     let x = random(-canvasW,canvasW);
+     let y = random(-canvasH,canvasH);
      starArr.push(x);
      starArr.push(y);
     } 
@@ -38,7 +38,7 @@ function draw() {
    image(backgroundImage,0,0);
    imageMode(CENTER);
 
-   for(let i = 0; i < 40; i+=2)
+   for(let i = 0; i < 140; i+=2)
    {
     stroke(255);            // Set the stroke (pixel color) to white
     point(starArr[i], starArr[i+1]);           // Draw a point at the random (x, y) position
