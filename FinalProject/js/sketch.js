@@ -29,6 +29,13 @@ function draw() {
    //background(220);
    image(backgroundImage,0,0);
    imageMode(CENTER);
+   let x = random(width);  // Generate a random x position
+   let y = random(height); // Generate a random y position
+   stroke(255);            // Set the stroke (pixel color) to white
+   point(x, y);            // Draw a point at the random (x, y) position
+   // Stars
+
+
    //Update and display animals
    if(!ratDead){
     ratA.update();
