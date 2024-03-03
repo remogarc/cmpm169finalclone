@@ -7,6 +7,9 @@ let ratA;
 let catA;
 let animalWidth = 300;
 let animalHeight = 200;
+let spaceMusic;
+let jazzMusic;
+let discoMusic;
 let backgroundImage;
 let ratDead = false;
 let possibleSpeeds = [-5,5];
@@ -14,6 +17,9 @@ let starArr = [];
 function preload(){
     cat = loadImage("../img/cat.png");
     rat = loadImage("../img/rat.png");
+    spaceMusic = loadSound("../music/space.mp3");
+    jazzMusic = loadSound("../music/jazz.mp3");
+    discoMusic = loadSound("../music/disco.mp3");
     backgroundImage = loadImage('../img/galaxybg.png');
     //test
 }
