@@ -1,6 +1,18 @@
 // sketch.js - Space Cat
+
+// Cats and Rats
 let cat;
 let rat;
+let cat2; 
+let rat2;
+let jazzcat; 
+let jazzrat; 
+let nyancat;
+let nyanrat; 
+let popcat; 
+let poprat;
+
+
 let canvasW = 1400;
 let canvasH = 700;
 let ratA;
@@ -8,29 +20,46 @@ let catA;
 let animalWidth = 300;
 let animalHeight = 200;
 let backgroundImage;
+
+// Rat dead
 let ratDead = false;
+let rat2Dead = false;
+let jazzratDead = false;
+let popratDead = false;
+let nyanratDead = false;
+
+
 let possibleSpeeds = [-5,5];
-let starArr = [];
+
+
 function preload(){
     cat = loadImage("../img/cat.png");
     rat = loadImage("../img/rat.png");
-    backgroundImage = loadImage('../img/galaxybg.png');
+    cat2 = loadImage("../img/cat2.png");
+    rat2 = loadImage("../img/rat2.png");
+    jazzcat = loadImage("../img/jazzcat.png");
+    jazzrat = loadImage("../img/jazzrat.png");
+    nyancat = loadImage("../img/nyancat.png");
+    nyanrat = loadImage("../img/nyanrat.png");
+    popcat = loadImage("../img/popcat.png");
+    poprat = loadImage("../img/poprat.png");
+
+
+    backgroundImage = loadImage('../img/galaxgybg.png');
     //test
 }
 
 // Set up the canvas
 function setup() {
+
     createCanvas(canvasW, canvasH,WEBGL);
-    ratA = new Animal(-200,-200,rat);
-    catA= new Animal(0,0,cat);
-    for(let i = 0; i < 70; i++)
-    {
-     let x = random(-canvasW,canvasW);
-     let y = random(-canvasH,canvasH);
-     starArr.push(x);
-     starArr.push(y);
-    } 
-    
+    ratA = new Animal(random(-200, 200),random(-200, 200),rat);
+    rat2 = new Animal(random(-200, 200),random(-200, 200),rat2);
+    jazzrat = new Animal(random(-200, 200),random(-200, 200),jazzrat);
+    poprat = new Animal(random(-200, 200),random(-200, 200),poprat);
+    nyanrat = new Animal(random(-200, 200),random(-200, 200),nyanrat);
+
+    catA = new Animal(random(-200, 200),random(-200, 200),cat);
 }
 
 function draw() {
@@ -52,18 +81,69 @@ function draw() {
     ratA.display();
    }
 
+    if(!rat2Dead){
+    rat2.update(); 
+    rat2.display();
+    }
+
+    if(!jazzratDead){
+    jazzrat.update();
+    jazzrat.display();
+    }
+
+    if(!popratDead){
+    poprat.update();
+    poprat.display();
+    }
+
+    if(!nyanratDead){
+    nyanrat.update();
+    nyanrat.display();
+    }
+
+
    catA.update();
    catA.display();
 
    if(!ratDead && catA.intersects(ratA)) {//Make both animals move in the opposite direction when they collide
     catA.speedX *= -1;
     catA.speedY *= -1;
-
-    //ratA.x = ratA.x * -1;
-    //ratA.y = ratA.y * -1;
     catA.display();
     ratDead = true;
   }
+
+  if(!rat2Dead && catA.intersects(rat2)) {
+    catA.speedX *= -1;
+    catA.speedY *= -1;
+    catA = new Animal(0,0,cat2);
+    catA.display();
+    rat2Dead = true;
+  }
+
+  if(!jazzratDead && catA.intersects(jazzrat)) {
+    catA.speedX *= -1;
+    catA.speedY *= -1;
+    catA = new Animal(0,0,jazzcat);
+    catA.display();
+    jazzratDead = true;
+  }
+
+  if (!popratDead && catA.intersects(poprat)) {
+    catA.speedX *= -1;
+    catA.speedY *= -1;
+    catA = new Animal(0,0,popcat);
+    catA.display();
+    popratDead = true;
+  }
+
+  if (!nyanratDead && catA.intersects(nyanrat)) {
+    catA.speedX *= -1;
+    catA.speedY *= -1;
+    catA = new Animal(0,0,nyancat);
+    catA.display();
+    nyanratDead = true;
+  }
+
 }
 
 class Animal {//Animal class
