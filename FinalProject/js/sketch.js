@@ -29,7 +29,6 @@ let popratDead = false;
 let nyanratDead = false;
 
 
-
 let possibleSpeeds = [-5,5];
 
 
@@ -61,12 +60,21 @@ function setup() {
     nyanrat = new Animal(random(-200, 200),random(-200, 200),nyanrat);
 
     catA = new Animal(random(-200, 200),random(-200, 200),cat);
-    
 }
 
 function draw() {
-   background(220);
+   //background(220);
+   image(backgroundImage,0,0);
    imageMode(CENTER);
+
+   for(let i = 0; i < 140; i+=2)
+   {
+    stroke(255);            // Set the stroke (pixel color) to white
+    point(starArr[i], starArr[i+1]);           // Draw a point at the random (x, y) position
+   }
+   // Stars
+
+
    //Update and display animals
    if(!ratDead){
     ratA.update();
