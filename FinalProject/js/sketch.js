@@ -36,7 +36,9 @@ function setup() {
      starArr.push(x);
      starArr.push(y);
     } 
-    
+    spaceMusic.play(); 
+    // Loop the audio
+    spaceMusic.setLoop(true);
 }
 
 function draw() {
