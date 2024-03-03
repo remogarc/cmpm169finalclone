@@ -1,15 +1,16 @@
 // sketch.js - Space Cat
-let catImages = {};
-let ratInfo = {};
-let canvasW = 1400;
-let canvasH = 700;
-let rat;
-let cat;
+const canvasW = 1400;
+const canvasH = 700;
 let animalWidth = 300;
 let animalHeight = 200;
-let backgroundImage;
-let ratDead = false;
 let possibleSpeeds = [-5, 5];
+let catImages = {};
+let ratInfo = {};
+let backgroundImage;
+let cat;
+let rat;
+let ratDead = false;
+let ratsCaught = [];
 
 function preload() {
   let regCatImg = loadImage("../img/cat.png");
@@ -27,29 +28,45 @@ function preload() {
   let popMusic = loadSound("../music/disco.mp3");
   let nyanMusic = loadSound("../music/nyancat.mp3");
 
-  catImages.regCat = regCatImg;
-  catImages.jazzCat = jazzCatImg;
-  catImages.popCat = popCatImg;
-  catImages.nyanCat = nyanCatImg;
+  catImages.regCat = {
+    image: regCatImg,
+    id: 0
+  };
+  catImages.jazzCat = {
+    image: jazzCatImg,
+    id: 1
+  };
+  catImages.popCat = {
+    image: popCatImg,
+    id: 2
+  };
+  catImages.nyanCat = {
+    image: nyanCatImg,
+    id: 3
+  };
   // add more cats here
-  
+
   ratInfo.regRat = {
     image: regRatImg,
-    music: spaceMusic
-  }
+    music: spaceMusic,
+    id: 0
+  };
   ratInfo.jazzRat = {
     image: jazzRatImg,
-    music: jazzMusic
-  }
+    music: jazzMusic,
+    id: 1
+  };
   ratInfo.popRat = {
     image: popRatImg,
-    music: popMusic
-  }
+    music: popMusic,
+    id: 2
+  };
   ratInfo.nyanRat = {
     image: nyanRatImg,
-    music: spaceMusic
-  }
-  //add more rats here
+    music: nyanMusic,
+    id: 3
+  };
+  // add more rats here
 
   backgroundImage = loadImage('../img/galaxybg.png');
 }
@@ -57,8 +74,8 @@ function preload() {
 // Set up the canvas
 function setup() {
   createCanvas(canvasW, canvasH, WEBGL);
-  rat = new Animal(-200, -200, ratInfo.regRat.image);
-  cat = new Animal(0, 0, catImages.regCat);
+  rat = new Animal(-200, -200, ratInfo.regRat.image, 0);
+  cat = new Animal(0, 0, catImages.regCat.image, 0);
 
   ratInfo.regRat.music.play();
   ratInfo.regRat.music.setLoop(true);
@@ -69,7 +86,7 @@ function draw() {
   image(backgroundImage, 0, 0);
   imageMode(CENTER);
 
-  //Update and display animals
+  // Update and display animals
   if (!ratDead) {
     rat.update();
     rat.display();
@@ -78,22 +95,30 @@ function draw() {
   cat.update();
   cat.display();
 
-  if (!ratDead && cat.intersects(rat)) {//Make both animals move in the opposite direction when they collide
+  // On collision, change cat direction and respawn new rat
+  if (!ratDead && cat.intersects(rat)) {
     cat.speedX *= -1;
     cat.speedY *= -1;
+    cat.display();
 
     //rat.x = rat.x * -1;
     //rat.y = rat.y * -1;
-    cat.display();
     ratDead = true;
+    setTimeout(delayRespawn, 3000);
   }
 }
 
-class Animal {//Animal class
-  constructor(x, y, img) {
+function delayRespawn() {
+  rat.respawn();
+  
+}
+
+class Animal {
+  constructor(x, y, img, id) {
     this.x = x + canvasW / 2;
     this.y = y + canvasH / 2;
-    this.img = img
+    this.img = img;
+    this.id = id;
     this.radius = animalWidth / 4;
     this.speedX = random(possibleSpeeds);
     this.speedY = random(possibleSpeeds);
@@ -103,6 +128,7 @@ class Animal {//Animal class
   update() {
     this.x += this.speedX;
     this.y += this.speedY;
+
     // Bounce off the edges
     if (this.x + animalWidth / 4 >= canvasW || this.x - animalWidth / 4 <= 0) {
       this.speedX *= -1;
@@ -129,5 +155,36 @@ class Animal {//Animal class
     let distanceSq = (this.x - other.x) ** 2 + (this.y - other.y) ** 2;
     let minDistSq = (this.radius + other.radius) ** 2;
     return distanceSq <= minDistSq;
+  }
+
+  respawn() {
+    let currentRatType = Object.keys(ratInfo).find(type => ratInfo[type]["id"] === this.id);
+    let currentMusic = ratInfo[currentRatType]["music"];
+    currentMusic.stop();
+
+    if (!ratsCaught.includes(this.id)) { ratsCaught.push(this.id) }
+
+    // Spawn nyan rat if all other rats except have been caught
+    if (ratsCaught.length == Object.keys(ratInfo).length - 1) {
+      this.img = ratInfo.nyanRat.image;
+      this.id = ratInfo.nyanRat.id;
+      ratInfo.nyanRat.music.play();
+      ratInfo.nyanRat.music.setLoop(true);
+    } else {  // Spawn rat that hasn't been caught yet
+      let newRatId = int(random(ratInfo.nyanRat.id));
+      while (ratsCaught.includes(newRatId)) {
+        newRatId = int(random(ratInfo.nyanRat.id));
+      }
+
+      let newRatType = Object.keys(ratInfo).find(type => ratInfo[type]["id"] === newRatId);
+      this.img = ratInfo[newRatType]["image"];
+      this.id = newRatId;
+
+      let newMusic = ratInfo[newRatType]["music"];
+      newMusic.play();
+      newMusic.setLoop(true);
+    }
+
+    ratDead = false;
   }
 }
