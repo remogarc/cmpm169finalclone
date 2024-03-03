@@ -4,7 +4,7 @@ const canvasH = 700;
 let animalWidth = 300;
 let animalHeight = 200;
 let possibleSpeeds = [-5, 5];
-let catImages = {};
+let catInfo = {};
 let ratInfo = {};
 let backgroundImage;
 let cat;
@@ -28,42 +28,42 @@ function preload() {
   let popMusic = loadSound("../music/disco.mp3");
   let nyanMusic = loadSound("../music/nyancat.mp3");
 
-  catImages.regCat = {
-    image: regCatImg,
+  catInfo.regCat = {
+    image: regCatImg,    
+    music: spaceMusic,
     id: 0
   };
-  catImages.jazzCat = {
+  catInfo.jazzCat = {
     image: jazzCatImg,
+    music: jazzMusic,
     id: 1
   };
-  catImages.popCat = {
-    image: popCatImg,
+  catInfo.popCat = {
+    image: popCatImg, 
+    music: popMusic,
     id: 2
   };
-  catImages.nyanCat = {
+  catInfo.nyanCat = {
     image: nyanCatImg,
+    music: nyanMusic,
     id: 3
   };
   // add more cats here
 
   ratInfo.regRat = {
     image: regRatImg,
-    music: spaceMusic,
     id: 0
   };
   ratInfo.jazzRat = {
     image: jazzRatImg,
-    music: jazzMusic,
     id: 1
   };
   ratInfo.popRat = {
     image: popRatImg,
-    music: popMusic,
     id: 2
   };
   ratInfo.nyanRat = {
     image: nyanRatImg,
-    music: nyanMusic,
     id: 3
   };
   // add more rats here
@@ -75,10 +75,10 @@ function preload() {
 function setup() {
   createCanvas(canvasW, canvasH, WEBGL);
   rat = new Animal(-200, -200, ratInfo.regRat.image, 0);
-  cat = new Animal(0, 0, catImages.regCat.image, 0);
+  cat = new Animal(0, 0, catInfo.regCat.image, 0);
 
-  ratInfo.regRat.music.play();
-  ratInfo.regRat.music.setLoop(true);
+  catInfo.regCat.music.play();
+  catInfo.regCat.music.setLoop(true);
 }
 
 function draw() {
@@ -110,7 +110,6 @@ function draw() {
 
 function delayRespawn() {
   rat.respawn();
-  
 }
 
 class Animal {
@@ -158,33 +157,37 @@ class Animal {
   }
 
   respawn() {
-    let currentRatType = Object.keys(ratInfo).find(type => ratInfo[type]["id"] === this.id);
-    let currentMusic = ratInfo[currentRatType]["music"];
-    currentMusic.stop();
+    let oldRatType = Object.keys(ratInfo).find(type => ratInfo[type]["id"] === this.id);
+    let oldCatType = Object.keys(catInfo).find(type => catInfo[type]["id"] === cat.id);
+    let oldMusic = catInfo[oldCatType]["music"];
+    oldMusic.stop();
 
     if (!ratsCaught.includes(this.id)) { ratsCaught.push(this.id) }
 
-    // Spawn nyan rat if all other rats except have been caught
-    if (ratsCaught.length == Object.keys(ratInfo).length - 1) {
-      this.img = ratInfo.nyanRat.image;
-      this.id = ratInfo.nyanRat.id;
-      ratInfo.nyanRat.music.play();
-      ratInfo.nyanRat.music.setLoop(true);
-    } else {  // Spawn rat that hasn't been caught yet
-      let newRatId = int(random(ratInfo.nyanRat.id));
-      while (ratsCaught.includes(newRatId)) {
-        newRatId = int(random(ratInfo.nyanRat.id));
+    if (oldRatType != "nyanRat") {
+      // Spawn nyan rat if all other rats except have been caught
+      if (ratsCaught.length == Object.keys(ratInfo).length - 1) {
+        this.img = ratInfo.nyanRat.image;
+        this.id = ratInfo.nyanRat.id;
+      } else {  // Spawn rat that hasn't been caught yet
+        let newRatId = int(random(ratInfo.nyanRat.id));
+        while (ratsCaught.includes(newRatId)) {
+          newRatId = int(random(ratInfo.nyanRat.id));
+        }
+
+        let newRatType = Object.keys(ratInfo).find(type => ratInfo[type]["id"] === newRatId);
+        this.img = ratInfo[newRatType]["image"];
+        this.id = newRatId;
       }
 
-      let newRatType = Object.keys(ratInfo).find(type => ratInfo[type]["id"] === newRatId);
-      this.img = ratInfo[newRatType]["image"];
-      this.id = newRatId;
-
-      let newMusic = ratInfo[newRatType]["music"];
-      newMusic.play();
-      newMusic.setLoop(true);
+      ratDead = false;
     }
 
-    ratDead = false;
+    cat.id = ratInfo[oldRatType]["id"];
+    let newCatType = Object.keys(catInfo).find(type => catInfo[type]["id"] === cat.id);
+    cat.img = catInfo[newCatType]["image"];
+    let newMusic = catInfo[newCatType]["music"];
+    newMusic.play();
+    newMusic.setLoop(true);
   }
 }
