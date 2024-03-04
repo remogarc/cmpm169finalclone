@@ -156,7 +156,10 @@ class Asteroid {
         if (this.y + asteroidHeight/4 >= canvasH || this.y - asteroidHeight/4 <= 0) {
           this.speedY *= -1;
         }
-      } 
+      } else {
+        this.speedX = 0;
+        this.speedY = 0; 
+      }
     }
 
     display() {
