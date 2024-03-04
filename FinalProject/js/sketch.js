@@ -5,8 +5,11 @@ let canvasW = 1400;
 let canvasH = 700;
 let ratA;
 let catA;
+let asteroids = [];
 let animalWidth = 300;
 let animalHeight = 200;
+let asteroidWidth = 100;
+let asteroidHeight = 100;
 let backgroundImage;
 let ratDead = false;
 let possibleSpeeds = [-5,5];
@@ -15,6 +18,7 @@ function preload(){
     cat = loadImage("../img/cat.png");
     rat = loadImage("../img/rat.png");
     backgroundImage = loadImage('../img/galaxybg.png');
+    asteroid = loadImage('../img/asteroid.png');
     //test
 }
 
@@ -23,6 +27,7 @@ function setup() {
     createCanvas(canvasW, canvasH,WEBGL);
     ratA = new Animal(-200,-200,rat);
     catA= new Animal(0,0,cat);
+    asteroids.push(new Asteroid(300, 300, asteroid));
     for(let i = 0; i < 70; i++)
     {
      let x = random(-canvasW,canvasW);
@@ -64,6 +69,25 @@ function draw() {
     catA.display();
     ratDead = true;
   }
+  
+  for (let asteroid of asteroids) {
+    if (asteroid.mousePressed()) {
+      asteroid.paused = !asteroid.paused;
+    } else if (!asteroid.dead) {
+      asteroid.update();
+      asteroid.display();     
+    } 
+    
+    if(!asteroid.dead && catA.intersects(asteroid)) {//Make both animals move in the opposite direction when they collide
+      catA.speedX *= -1;
+      catA.speedY *= -1;
+  
+      //ratA.x = ratA.x * -1;
+      //ratA.y = ratA.y * -1;
+      catA.display();
+      asteroid.dead = true;
+    }
+   } 
 }
 
 class Animal {//Animal class
@@ -108,3 +132,58 @@ class Animal {//Animal class
       return distanceSq <= minDistSq;
     }
   }
+
+class Asteroid {
+    constructor(x, y, img) {
+      this.x = x+canvasW/2;
+      this.y = y+canvasH/2;
+      this.img = img;
+      this.radius = asteroidWidth/4;
+      this.speedX = random(possibleSpeeds);
+      this.speedY = random(possibleSpeeds);
+      this.paused = false;
+      this.dead = false; 
+    }
+
+    update() {
+      if (!this.paused) {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        // Bounce off the edges
+        if (this.x + asteroidWidth/4 >= canvasW|| this.x - asteroidWidth/4 <= 0 ) {
+          this.speedX *= -1;
+        }
+        if (this.y + asteroidHeight/4 >= canvasH || this.y - asteroidHeight/4 <= 0) {
+          this.speedY *= -1;
+        }
+      } 
+    }
+
+    display() {
+      /*noFill();
+      ellipse(this.x-700,this.y-350,this.radius);*/
+      if(this.speedX < 0){//Flip the image depending on speed
+        image(this.img, this.x-canvasW/2, this.y-canvasH/2,asteroidWidth,asteroidHeight);
+      }
+      else{
+        image(this.img, this.x-canvasW/2, this.y-canvasH/2,-asteroidWidth,asteroidHeight);
+      }
+    }
+  
+    // Check if this animal intersects with another animal
+    intersects(other) {
+      let distanceSq = (this.x - other.x) ** 2 + (this.y - other.y) ** 2;
+      let minDistSq = (this.radius + other.radius) ** 2;
+      return distanceSq <= minDistSq;
+    }
+
+    mouseOver() {
+      let d = dist(mouseX, mouseY, this.x, this.y);
+      return d <= this.radius;
+    }
+    mousePressed() {
+      if (this.mouseOver()) {
+          this.paused = !this.paused; // Toggle the paused flag
+      }
+    }
+}
