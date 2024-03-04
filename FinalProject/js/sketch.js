@@ -147,6 +147,10 @@ class Asteroid {
 
     update() {
       if (!this.paused) {
+        if (this.speedX == 0) {
+          this.speedX = random(possibleSpeeds);
+          this.speedY = random(possibleSpeeds);
+        }
         this.x += this.speedX;
         this.y += this.speedY;
         // Bounce off the edges
@@ -185,8 +189,8 @@ class Asteroid {
       return d <= this.radius;
     }
     mousePressed() {
-      if (this.mouseOver()) {
-          this.paused = !this.paused; // Toggle the paused flag
+      if (this.mouseOver() && mouseIsPressed) {
+        this.paused = !this.paused; // Toggle the paused flag
       }
     }
 }
