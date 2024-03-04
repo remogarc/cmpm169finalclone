@@ -3,6 +3,9 @@ const canvasW = 1400;
 const canvasH = 700;
 let animalWidth = 300;
 let animalHeight = 200;
+let asteroidWidth = 100;
+let asteroidHeight = 100;
+let asteroids = [];
 let possibleSpeeds = [-5, 5];
 let catInfo = {};
 let ratInfo = {};
@@ -14,11 +17,11 @@ let ratsCaught = [];
 let particles = [];
 
 let colorScheme = ['#FF0000',
-	'#FF7F00',
-	'#FFFF00',
-	'#00FF00',
-	'#0000FF',
-	'#4B0082',
+  '#FF7F00',
+  '#FFFF00',
+  '#00FF00',
+  '#0000FF',
+  '#4B0082',
   '#9400D3'
 ];
 
@@ -39,7 +42,7 @@ function preload() {
   let nyanMusic = loadSound("../music/nyancat.mp3");
 
   catInfo.regCat = {
-    image: regCatImg,    
+    image: regCatImg,
     music: spaceMusic,
     id: 0
   };
@@ -49,7 +52,7 @@ function preload() {
     id: 1
   };
   catInfo.popCat = {
-    image: popCatImg, 
+    image: popCatImg,
     music: popMusic,
     id: 2
   };
@@ -79,6 +82,7 @@ function preload() {
   // add more rats here but always make nyan rat with the last ID
 
   backgroundImage = loadImage('../img/galaxybg.png');
+  asteroid = loadImage('../img/asteroid.png');
 }
 
 // Set up the canvas
@@ -89,6 +93,13 @@ function setup() {
 
   catInfo.regCat.music.play();
   catInfo.regCat.music.setLoop(true);
+
+  // Create multiple asteroids
+  for (let i = 0; i < 5; i++) {
+    let asteroidX = random(canvasW) - canvasW / 2;
+    let asteroidY = random(canvasH) - canvasH / 2;
+    asteroids.push(new Asteroid(asteroidX, asteroidY, asteroid));
+  }
 }
 
 function draw() {
@@ -103,6 +114,39 @@ function draw() {
 
   cat.update();
   cat.display();
+
+  // Update and display asteroids
+  for (let i = 0; i < asteroids.length; i++) {
+    asteroids[i].update();
+    asteroids[i].display();
+
+    // Check for mouse interaction
+    if (asteroids[i].isMouseOver() && mouseIsPressed) {
+      asteroids[i].dragging = true;
+      asteroids[i].offsetX = asteroids[i].x - mouseX;
+      asteroids[i].offsetY = asteroids[i].y - mouseY;
+    }
+
+    if (asteroids[i].dragging) {
+      asteroids[i].x = mouseX + asteroids[i].offsetX;
+      asteroids[i].y = mouseY + asteroids[i].offsetY;
+    }
+    // Stop dragging when mouse is released
+    if (!mouseIsPressed) {
+      asteroids[i].dragging = false; 
+    }
+
+    // Check for collision with the cat
+    if (cat.intersects(asteroids[i])) {
+      // Invert the cat's direction
+      cat.speedX *= -1;
+      cat.speedY *= -1;
+
+      // Invert the asteroid's direction
+      asteroids[i].speedX *= -1;
+      asteroids[i].speedY *= -1;
+    }
+  }
 
   // On collision, change cat direction and respawn new rat
   if (!ratDead && cat.intersects(rat)) {
@@ -206,6 +250,64 @@ class Animal {
 
 }
 
+class Asteroid {
+  constructor(x, y, img) {
+    this.x = x + canvasW / 2;
+    this.y = y + canvasH / 2;
+    this.img = img;
+    this.radius = asteroidWidth / 4;
+    this.speedX = random(possibleSpeeds);
+    this.speedY = random(possibleSpeeds);
+    this.paused = false;
+    this.dead = false;
+  }
+
+  update() {
+    if (!this.paused) {
+      if (this.speedX == 0) {
+        this.speedX = random(possibleSpeeds);
+        this.speedY = random(possibleSpeeds);
+      }
+
+      this.x += this.speedX * 0.5; // Adjust the speed as needed HERE
+      this.y += this.speedY * 0.5; // Adjust the speed as needed HERE
+
+      // Bounce off the edges
+      if (this.x + asteroidWidth / 4 >= canvasW || this.x - asteroidWidth / 4 <= 0) {
+        this.speedX *= -1;
+      }
+      if (this.y + asteroidHeight / 4 >= canvasH || this.y - asteroidHeight / 4 <= 0) {
+        this.speedY *= -1;
+      }
+    } else {
+      this.speedX = 0;
+      this.speedY = 0;
+    }
+  }
+
+  display() {
+
+    if (this.speedX < 0) {//Flip the image depending on speed
+      image(this.img, this.x - canvasW / 2, this.y - canvasH / 2, asteroidWidth, asteroidHeight);
+    }
+    else {
+      image(this.img, this.x - canvasW / 2, this.y - canvasH / 2, -asteroidWidth, asteroidHeight);
+    }
+  }
+
+  // Check if this animal intersects with asteroid
+  intersects(other) {
+    let distanceSq = (this.x - other.x) ** 2 + (this.y - other.y) ** 2;
+    let minDistSq = (this.radius + other.radius) ** 2;
+    return distanceSq <= minDistSq;
+  }
+
+  // Check if the mouse is over the asteroid
+  isMouseOver() {
+    let d = dist(mouseX, mouseY, this.x, this.y);
+    return d <= this.radius;
+  }
+}
 
 function Particle(x, y, vx, vy) {
   this.pos = createVector(x, y);
@@ -214,19 +316,19 @@ function Particle(x, y, vx, vy) {
   this.lifespan = 255;
   this.color = random(colorScheme);
 
-  this.update = function() {
+  this.update = function () {
     this.vel.add(this.acc);
     this.pos.add(this.vel);
     this.lifespan -= 4;
   };
 
-  this.display = function() {
+  this.display = function () {
     noStroke();
     fill(this.color + hex(this.lifespan, 2));
     ellipse(this.pos.x, this.pos.y, 12); // Adjust size as needed
   };
 
-  this.isDead = function() {
+  this.isDead = function () {
     return this.lifespan < 0;
   };
 }
