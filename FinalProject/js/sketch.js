@@ -269,8 +269,8 @@ class Asteroid {
         this.speedY = random(possibleSpeeds);
       }
 
-      this.x += this.speedX * 0.5; // Adjust the speed as needed HERE
-      this.y += this.speedY * 0.5; // Adjust the speed as needed HERE
+      this.x += this.speedX * 0.25; // Adjust the speed as needed HERE
+      this.y += this.speedY * 0.25; // Adjust the speed as needed HERE
 
       // Bounce off the edges
       if (this.x + asteroidWidth / 4 >= canvasW || this.x - asteroidWidth / 4 <= 0) {
