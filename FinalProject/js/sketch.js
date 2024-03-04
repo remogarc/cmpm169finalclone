@@ -81,9 +81,7 @@ function draw() {
     if(!asteroid.dead && catA.intersects(asteroid)) {//Make both animals move in the opposite direction when they collide
       catA.speedX *= -1;
       catA.speedY *= -1;
-  
-      //ratA.x = ratA.x * -1;
-      //ratA.y = ratA.y * -1;
+
       catA.display();
       asteroid.dead = true;
     }
