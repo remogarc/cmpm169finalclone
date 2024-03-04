@@ -35,7 +35,7 @@ function preload() {
 
   let spaceMusic = loadSound("../music/space.mp3");
   let jazzMusic = loadSound("../music/jazz.mp3");
-  let popMusic = loadSound("../music/disco.mp3");
+  let popMusic = loadSound("../music/pop.mp3");
   let nyanMusic = loadSound("../music/nyancat.mp3");
 
   catInfo.regCat = {
@@ -58,7 +58,7 @@ function preload() {
     music: nyanMusic,
     id: 3
   };
-  // add more cats here
+  // add more cats here but always make nyan cat last with the last ID
 
   ratInfo.regRat = {
     image: regRatImg,
@@ -76,7 +76,7 @@ function preload() {
     image: nyanRatImg,
     id: 3
   };
-  // add more rats here
+  // add more rats here but always make nyan rat with the last ID
 
   backgroundImage = loadImage('../img/galaxybg.png');
 }
@@ -92,7 +92,6 @@ function setup() {
 }
 
 function draw() {
-  //background(220);
   image(backgroundImage, 0, 0);
   imageMode(CENTER);
 
@@ -111,8 +110,6 @@ function draw() {
     cat.speedY *= -1;
     cat.display();
 
-    //rat.x = rat.x * -1;
-    //rat.y = rat.y * -1;
     ratDead = true;
     setTimeout(delayRespawn, 3000);
   }
@@ -156,9 +153,8 @@ class Animal {
 
   // Display animal
   display() {
-    /*noFill();
-    ellipse(this.x-700,this.y-350,this.radius);*/
-    if (this.speedX < 0) {//Flip the image depending on speed
+    //Flip the image depending on speed
+    if (this.speedX < 0) {
       image(this.img, this.x - canvasW / 2, this.y - canvasH / 2, animalWidth, animalHeight);
     }
     else {
