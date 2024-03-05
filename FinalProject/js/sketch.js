@@ -16,6 +16,37 @@ let ratDead = false;
 let ratsCaught = [];
 let particles = [];
 
+var drawRainbow = function(shift) {
+  var red = color(255, 10, 10);
+  var orange = color(255, 111, 0);
+  var yellow = color(255, 255, 0);
+  var green = color(0, 255, 0);
+  var blue = color(0, 136, 255);
+  var purple = color(145, 48, 255);
+
+  scale(nyanscale,nyanscale);
+  translate(0,nyany);
+  
+  strokeWeight(20);
+  drawRainbowStreak(shift, red, 125);
+  drawRainbowStreak(shift, orange, 145);
+  drawRainbowStreak(shift, yellow, 165);
+  drawRainbowStreak(shift, green, 185);
+  drawRainbowStreak(shift, blue, 205);
+  drawRainbowStreak(shift, purple, 225);
+  resetMatrix();
+};
+
+let drawStars = function(state, dx) {
+  stroke(255, 255, 255);
+  drawStar(state, 400 - (dx % 400), 30);
+  drawStar((state + 2) % 4, 400 - ((dx + 100) % 400), 100);
+  drawStar((state + 1) % 4, 400 - ((dx - 60) % 400), 150);
+  drawStar((state + 3) % 4, 400 - ((dx + 200) % 400), 230);
+  drawStar((state + 2), 400 - ((dx + 300) % 400), 290);
+  drawStar((state + 1), 400 - ((dx - 175) % 400), 370);
+};
+
 let colorScheme = ['#FF0000',
   '#FF7F00',
   '#FFFF00',
@@ -371,7 +402,7 @@ function Particle(x, y, vx, vy) {
   this.display = function () {
     noStroke();
     fill(this.color + hex(this.lifespan, 2));
-    ellipse(this.pos.x, this.pos.y, 12); // Adjust size as needed
+    ellipse(this.pos.x, this.pos.y, 12);
   };
 
   this.isDead = function () {
