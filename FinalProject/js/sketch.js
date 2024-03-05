@@ -16,45 +16,6 @@ let ratDead = false;
 let ratsCaught = [];
 let particles = [];
 
-var drawRainbow = function(shift) {
-  var red = color(255, 10, 10);
-  var orange = color(255, 111, 0);
-  var yellow = color(255, 255, 0);
-  var green = color(0, 255, 0);
-  var blue = color(0, 136, 255);
-  var purple = color(145, 48, 255);
-
-  scale(nyanscale,nyanscale);
-  translate(0,nyany);
-  
-  strokeWeight(20);
-  drawRainbowStreak(shift, red, 125);
-  drawRainbowStreak(shift, orange, 145);
-  drawRainbowStreak(shift, yellow, 165);
-  drawRainbowStreak(shift, green, 185);
-  drawRainbowStreak(shift, blue, 205);
-  drawRainbowStreak(shift, purple, 225);
-  resetMatrix();
-};
-
-let drawStars = function(state, dx) {
-  stroke(255, 255, 255);
-  drawStar(state, 400 - (dx % 400), 30);
-  drawStar((state + 2) % 4, 400 - ((dx + 100) % 400), 100);
-  drawStar((state + 1) % 4, 400 - ((dx - 60) % 400), 150);
-  drawStar((state + 3) % 4, 400 - ((dx + 200) % 400), 230);
-  drawStar((state + 2), 400 - ((dx + 300) % 400), 290);
-  drawStar((state + 1), 400 - ((dx - 175) % 400), 370);
-};
-
-let colorScheme = ['#FF0000',
-  '#FF7F00',
-  '#FFFF00',
-  '#00FF00',
-  '#0000FF',
-  '#4B0082',
-  '#9400D3'
-];
 
 function preload() {
   let regCatImg = loadImage("../img/cat.png");
@@ -386,12 +347,12 @@ class Asteroid {
   }
 }
 
-function Particle(x, y, vx, vy) {
+function Particle(x, y, vx, vy, color) {
   this.pos = createVector(x, y);
   this.vel = createVector(vx, vy);
   this.acc = createVector(0, 0);
   this.lifespan = 255;
-  this.color = random(colorScheme);
+  this.color = color;
 
   this.update = function () {
     this.vel.add(this.acc);
@@ -411,13 +372,33 @@ function Particle(x, y, vx, vy) {
 }
 
 function updateAndDisplayTrail() {
+  const rainbowColors = [
+    '#FF0000',
+    '#FF7F00',
+    '#FFFF00',
+    '#00FF00',
+    '#0000FF',
+    '#4B0082', 
+    '#9400D3'  
+  ];
+
   let direction = createVector(cat.x - cat.prevX, cat.y - cat.prevY).mult(-1);
   direction.normalize();
 
-  for (let i = 0; i < 5; i++) {
-    let angle = direction.heading() + random(-PI / 6, PI / 6);
-    let speed = random(3, 8);
-    particles.push(new Particle(cat.x - canvasW / 2, cat.y - canvasH / 2, cos(angle) * speed, sin(angle) * speed));
+  let startAngle = frameCount * 0.1;
+
+  for (let i = 0; i < rainbowColors.length; i++) {
+    let yOffset = (i - rainbowColors.length / 2) * 5;
+
+    // Create a line of particles for each color
+    for (let j = 0; j < 5; j++) {
+      let angle = direction.heading() + sin(startAngle + j * 0.5) * 0.5;
+      let speed = 2;
+      let x = cat.x - canvasW / 2 + cos(angle) * (j * 10);
+      let y = cat.y - canvasH / 2 + sin(angle) * (j * 10) + yOffset;
+
+      particles.push(new Particle(x, y, cos(angle) * speed, sin(angle) * speed, rainbowColors[i]));
+    }
   }
 
   for (let i = particles.length - 1; i >= 0; i--) {
