@@ -29,16 +29,25 @@ function preload() {
   let regCatImg = loadImage("../img/cat.png");
   let jazzCatImg = loadImage("../img/jazzcat.png");
   let popCatImg = loadImage("../img/popcat.png");
+  let countryCatImg = loadImage("../img/countrycat.png");
+  let rockCatImg = loadImage("../img/rockcat.png");
+  let hiphopCatImg = loadImage("../img/hiphopcat.png");
   let nyanCatImg = loadImage("../img/nyancat.png");
 
   let regRatImg = loadImage("../img/rat.png");
   let jazzRatImg = loadImage("../img/jazzrat.png");
   let popRatImg = loadImage("../img/poprat.png");
+  let countryRatImg = loadImage("../img/countryrat.png");
+  let rockratImg = loadImage("../img/rockrat.png");
+  let hiphopRatImg = loadImage("../img/hiphoprat.png");
   let nyanRatImg = loadImage("../img/nyanrat.png")
 
   let spaceMusic = loadSound("../music/space.mp3");
   let jazzMusic = loadSound("../music/jazz.mp3");
   let popMusic = loadSound("../music/pop.mp3");
+  let countryMusic = loadSound("../music/country.mp3");
+  let rockMusic = loadSound("../music/rock.mp3");
+  let hiphopMusic = loadSound("../music/hiphop.mp3");
   let nyanMusic = loadSound("../music/nyancat.mp3");
 
   catInfo.regCat = {
@@ -56,10 +65,25 @@ function preload() {
     music: popMusic,
     id: 2
   };
+  catInfo.countryCat = {
+    image: countryCatImg,
+    music: countryMusic,
+    id: 3
+  };
+  catInfo.rockCat = {
+    image: rockCatImg,
+    music: rockMusic,
+    id: 4
+  };
+  catInfo.hiphopCat = {
+    image: hiphopCatImg,
+    music: hiphopMusic,
+    id: 5
+  };
   catInfo.nyanCat = {
     image: nyanCatImg,
     music: nyanMusic,
-    id: 3
+    id: 6
   };
   // add more cats here but always make nyan cat last with the last ID
 
@@ -75,9 +99,21 @@ function preload() {
     image: popRatImg,
     id: 2
   };
+  ratInfo.countryRat = {
+    image: countryRatImg,
+    id: 3
+  };
+  ratInfo.rockRat = {
+    image: rockratImg,
+    id: 4
+  };
+  ratInfo.hiphopRat = {
+    image: hiphopRatImg,
+    id: 5
+  };
   ratInfo.nyanRat = {
     image: nyanRatImg,
-    id: 3
+    id: 6
   };
   // add more rats here but always make nyan rat with the last ID
 
