@@ -1,8 +1,8 @@
 // sketch.js - Space Cat
 const canvasW = 1400;
 const canvasH = 700;
-let animalWidth = 300;
-let animalHeight = 200;
+let animalWidth = 150;
+let animalHeight = 150;
 let asteroidWidth = 100;
 let asteroidHeight = 100;
 let asteroids = [];
@@ -131,7 +131,7 @@ function setup() {
   catInfo.regCat.music.setLoop(true);
 
   // Create multiple asteroids
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 15; i++) {
     let asteroidX = random(canvasW) - canvasW / 2;
     let asteroidY = random(canvasH) - canvasH / 2;
     asteroids.push(new Asteroid(asteroidX, asteroidY, asteroid));
@@ -177,6 +177,16 @@ function draw() {
       // Invert the cat's direction
       cat.speedX *= -1;
       cat.speedY *= -1;
+
+      // Invert the asteroid's direction
+      asteroids[i].speedX *= -1;
+      asteroids[i].speedY *= -1;
+    }
+
+    if (rat.intersects(asteroids[i])) {
+      // Invert the cat's direction
+      rat.speedX *= -1;
+      rat.speedY *= -1;
 
       // Invert the asteroid's direction
       asteroids[i].speedX *= -1;
