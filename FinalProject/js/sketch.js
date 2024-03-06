@@ -1,8 +1,8 @@
 // sketch.js - Space Cat
 const canvasW = 1400;
 const canvasH = 700;
-let animalWidth = 300;
-let animalHeight = 200;
+let animalWidth = 150;
+let animalHeight = 150;
 let asteroidWidth = 100;
 let asteroidHeight = 100;
 let asteroids = [];
@@ -15,6 +15,37 @@ let rat;
 let ratDead = false;
 let ratsCaught = [];
 let particles = [];
+
+var drawRainbow = function(shift) {
+  var red = color(255, 10, 10);
+  var orange = color(255, 111, 0);
+  var yellow = color(255, 255, 0);
+  var green = color(0, 255, 0);
+  var blue = color(0, 136, 255);
+  var purple = color(145, 48, 255);
+
+  scale(nyanscale,nyanscale);
+  translate(0,nyany);
+  
+  strokeWeight(20);
+  drawRainbowStreak(shift, red, 125);
+  drawRainbowStreak(shift, orange, 145);
+  drawRainbowStreak(shift, yellow, 165);
+  drawRainbowStreak(shift, green, 185);
+  drawRainbowStreak(shift, blue, 205);
+  drawRainbowStreak(shift, purple, 225);
+  resetMatrix();
+};
+
+let drawStars = function(state, dx) {
+  stroke(255, 255, 255);
+  drawStar(state, 400 - (dx % 400), 30);
+  drawStar((state + 2) % 4, 400 - ((dx + 100) % 400), 100);
+  drawStar((state + 1) % 4, 400 - ((dx - 60) % 400), 150);
+  drawStar((state + 3) % 4, 400 - ((dx + 200) % 400), 230);
+  drawStar((state + 2), 400 - ((dx + 300) % 400), 290);
+  drawStar((state + 1), 400 - ((dx - 175) % 400), 370);
+};
 
 let colorScheme = ['#FF0000',
   '#FF7F00',
@@ -29,16 +60,25 @@ function preload() {
   let regCatImg = loadImage("../img/cat.png");
   let jazzCatImg = loadImage("../img/jazzcat.png");
   let popCatImg = loadImage("../img/popcat.png");
+  let countryCatImg = loadImage("../img/countrycat.png");
+  let rockCatImg = loadImage("../img/rockcat.png");
+  let hiphopCatImg = loadImage("../img/hiphopcat.png");
   let nyanCatImg = loadImage("../img/nyancat.png");
 
   let regRatImg = loadImage("../img/rat.png");
   let jazzRatImg = loadImage("../img/jazzrat.png");
   let popRatImg = loadImage("../img/poprat.png");
+  let countryRatImg = loadImage("../img/countryrat.png");
+  let rockratImg = loadImage("../img/rockrat.png");
+  let hiphopRatImg = loadImage("../img/hiphoprat.png");
   let nyanRatImg = loadImage("../img/nyanrat.png")
 
   let spaceMusic = loadSound("../music/space.mp3");
   let jazzMusic = loadSound("../music/jazz.mp3");
   let popMusic = loadSound("../music/pop.mp3");
+  let countryMusic = loadSound("../music/country.mp3");
+  let rockMusic = loadSound("../music/rock.mp3");
+  let hiphopMusic = loadSound("../music/hiphop.mp3");
   let nyanMusic = loadSound("../music/nyancat.mp3");
 
   catInfo.regCat = {
@@ -56,10 +96,25 @@ function preload() {
     music: popMusic,
     id: 2
   };
+  catInfo.countryCat = {
+    image: countryCatImg,
+    music: countryMusic,
+    id: 3
+  };
+  catInfo.rockCat = {
+    image: rockCatImg,
+    music: rockMusic,
+    id: 4
+  };
+  catInfo.hiphopCat = {
+    image: hiphopCatImg,
+    music: hiphopMusic,
+    id: 5
+  };
   catInfo.nyanCat = {
     image: nyanCatImg,
     music: nyanMusic,
-    id: 3
+    id: 6
   };
   // add more cats here but always make nyan cat last with the last ID
 
@@ -75,9 +130,21 @@ function preload() {
     image: popRatImg,
     id: 2
   };
+  ratInfo.countryRat = {
+    image: countryRatImg,
+    id: 3
+  };
+  ratInfo.rockRat = {
+    image: rockratImg,
+    id: 4
+  };
+  ratInfo.hiphopRat = {
+    image: hiphopRatImg,
+    id: 5
+  };
   ratInfo.nyanRat = {
     image: nyanRatImg,
-    id: 3
+    id: 6
   };
   // add more rats here but always make nyan rat with the last ID
 
@@ -95,7 +162,7 @@ function setup() {
   catInfo.regCat.music.setLoop(true);
 
   // Create multiple asteroids
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 15; i++) {
     let asteroidX = random(canvasW) - canvasW / 2;
     let asteroidY = random(canvasH) - canvasH / 2;
     asteroids.push(new Asteroid(asteroidX, asteroidY, asteroid));
@@ -141,6 +208,16 @@ function draw() {
       // Invert the cat's direction
       cat.speedX *= -1;
       cat.speedY *= -1;
+
+      // Invert the asteroid's direction
+      asteroids[i].speedX *= -1;
+      asteroids[i].speedY *= -1;
+    }
+
+    if (rat.intersects(asteroids[i])) {
+      // Invert the cat's direction
+      rat.speedX *= -1;
+      rat.speedY *= -1;
 
       // Invert the asteroid's direction
       asteroids[i].speedX *= -1;
@@ -269,8 +346,8 @@ class Asteroid {
         this.speedY = random(possibleSpeeds);
       }
 
-      this.x += this.speedX * 0.5; // Adjust the speed as needed HERE
-      this.y += this.speedY * 0.5; // Adjust the speed as needed HERE
+      this.x += this.speedX * 0.25; // Adjust the speed as needed HERE
+      this.y += this.speedY * 0.25; // Adjust the speed as needed HERE
 
       // Bounce off the edges
       if (this.x + asteroidWidth / 4 >= canvasW || this.x - asteroidWidth / 4 <= 0) {
@@ -325,7 +402,7 @@ function Particle(x, y, vx, vy) {
   this.display = function () {
     noStroke();
     fill(this.color + hex(this.lifespan, 2));
-    ellipse(this.pos.x, this.pos.y, 12); // Adjust size as needed
+    ellipse(this.pos.x, this.pos.y, 12);
   };
 
   this.isDead = function () {
