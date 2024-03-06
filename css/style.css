@@ -1,0 +1,11 @@
+.moving-images img {
+    animation: moveUpDown 3s infinite alternate;
+}
+@keyframes moveUpDown {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-20px);
+    }
+}
