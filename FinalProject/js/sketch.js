@@ -378,26 +378,24 @@ function updateAndDisplayTrail() {
     '#FFFF00',
     '#00FF00',
     '#0000FF',
-    '#4B0082', 
-    '#9400D3'  
+    '#4B0082',
+    '#9400D3'
   ];
 
-  let direction = createVector(cat.x - cat.prevX, cat.y - cat.prevY).mult(-1);
-  direction.normalize();
-
-  let startAngle = frameCount * 0.1;
+  // trail offset to cat adjust as needed
+  let trailXOffset = cat.speedX < 0 ? 50 : -50; 
 
   for (let i = 0; i < rainbowColors.length; i++) {
-    let yOffset = (i - rainbowColors.length / 2) * 5;
+    let color = rainbowColors[i];
 
     // Create a line of particles for each color
     for (let j = 0; j < 5; j++) {
-      let angle = direction.heading() + sin(startAngle + j * 0.5) * 0.5;
-      let speed = 2;
-      let x = cat.x - canvasW / 2 + cos(angle) * (j * 10);
-      let y = cat.y - canvasH / 2 + sin(angle) * (j * 10) + yOffset;
+    
+      let x = cat.x - canvasW / 2 + trailXOffset;
+      let y = cat.y - canvasH / 2 + (i * 10 - rainbowColors.length / 2 * 10);
 
-      particles.push(new Particle(x, y, cos(angle) * speed, sin(angle) * speed, rainbowColors[i]));
+      let speed = 2;
+      particles.push(new Particle(x, y, cat.speedX < 0 ? speed : -speed, 0, color));
     }
   }
 
