@@ -15,88 +15,136 @@
 	<!-- Link to javascript file - DEFER waits until all elements are rendered -->
 	<script type="text/javascript" src="./js/experiment.js"></script>
 	<link rel="stylesheet" href="css/style.css">
+
+	<!-- Add the audio element -->
+    <audio id="country">
+        <source src="music/country.mp3" type="audio/mpeg">
+    </audio>
+
+	<audio id="hiphop">
+		<source src="music/hiphop.mp3" type="audio/mpeg">
+	</audio>
+	<audio id="rock">
+		<source src="music/rock.mp3" type="audio/mpeg">
+	</audio>
+	<audio id="pop">
+		<source src="music/pop.mp3" type="audio/mpeg">
+	</audio>
+	<audio id="jazz">
+		<source src="music/jazz.mp3" type="audio/mpeg">
+	</audio>
+	<audio id="nyan">
+		<source src="music/nyancat.mp3" type="audio/mpeg">
+	</audio>
+	<audio id="space">
+		<source src="music/space.mp3" type="audio/mpeg">
+	</audio>
+
 </head>
 <body>
 	<header>
-		<h1 text-align="center">CMPM 169 Creative Coding</h1>
-		<table style="width:100%">
-		<h1 text-align="center">Cats</h1>
+		<h1>Final Project: Musical Space Cat</h1>
+
+		<button class="toggleButton" onclick="toggleTable('cats')">Cats</button>
+        <button class="toggleButton" onclick="toggleTable('rats')">Rats</button>
+        <button class="toggleButton" onclick="navigateTo('FinalProject/index.html')">Play</button>
+
+		<table id="catsTable" class="categoryTable" style="width:100%">
 			<tr>
-				<th class="moving-images"><img src="./img/cat.png" alt="Default Cat" width="100" height="100"></th>
-				<th class="moving-images"><img src="./img/countrycat.png" alt="Country Cat" width="100" height="100"></th>
-				<th class="moving-images"><img src="./img/hiphopcat.png" alt="Hip Hop Cat" width="100" height="100"></th>
+				<th class="moving-images"><a href="#"></a><img src="./img/cat.png" alt="Default Cat" width="100" height="100"></a></th>
+				<th class="moving-images"><a href="#"></a><img src="./img/countrycat.png" alt="Country Cat" width="100" height="100" onclick="toggleSound('country', this)"></a></th>
+				<th class="moving-images"><a href="#"></a><img src="./img/hiphopcat.png" alt="Hip Hop Cat" width="100" height="100" onclick="toggleSound('hiphop', this)"></a></th>
 			</tr>
 			<tr>
-				<th>Description: bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop</th>
-				<th>Description: bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop</th>
-				<th>Description: bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop</th>
+				<th>Description: I am the first cat. Make sure to catch all the rats to see me change. </th>
+				<th>Description: I am the country cat, click me to see what I can do. </th>
+				<th>Description: I am the hip hop cat, click me to hear my bars. </th>
 			</tr>
 			<tr>
-				<th class="moving-images"><img src="./img/rockcat.png" alt="Rock Cat" width="100" height="100"></th>
-				<th class="moving-images"><img src="./img/popcat.png" alt="Space Cat" width="100" height="100"></th>
-				<th class="moving-images"><img src="./img/jazzcat.png" alt="Jazz Cat" width="100" height="100"></th>
+				<th class="moving-images"><a href="#"></a><img src="./img/rockcat.png" alt="Rock Cat" width="100" height="100" onclick="toggleSound('rock', this)"></a></th>
+				<th class="moving-images"><a href="#"></a><img src="./img/popcat.png" alt="Space Cat" width="100" height="100" onclick="toggleSound('pop', this)"></a></th>
+				<th class="moving-images"><a href="#"></a><img src="./img/jazzcat.png" alt="Jazz Cat" width="100" height="100" onclick="toggleSound('jazz', this)"></a></th>
 			</tr>
 			<tr>
-				<th>Description: bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop</th>
-				<th>Description: bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop</th>
-				<th>Description: bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop</th>
+				<th>Description: I am the rock and roll cat, click me to hear how I roll.</th>
+				<th>Description: I am the loving pop cat, click on me to hear me. </th>
+				<th>Description: I am the jazz cat, click on me to hear how jazzy I am. </th>
 			</tr>
 			<tr>
 				<th></th>
-				<th class="moving-images"><img src="./img/nyancat.png" alt="Nyan Cat" width="100" height="100"></th>
+				<th class="moving-images"><a href="#"></a><img src="./img/nyancat.png" alt="Nyan Cat" width="100" height="100" onclick="toggleSound('nyan', this)"></a></th>
 			</tr>
 			<tr>
 				<th></th>
-				<th>Description: bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop</th>
+				<th>Description: The final cat, click me to have a crazy time. </th>
 				<th></th>
 			</tr>
 		</table>
 
 		<table style="width:100%">
-		<h1>Rats</h1>
-		<table style="width:100%">
+		<table id="ratsTable" class="categoryTable" style="width:100%">
 			<tr>
-				<th class="moving-images"><img src="./img/rat.png" alt="Default Rat" width="100" height="100"></th>
-				<th class="moving-images"><img src="./img/countryrat.png" alt="Country Rat" width="100" height="100"></th>
-				<th class="moving-images"><img src="./img/hiphoprat.png" alt="Hip Hop Rat" width="100" height="100"></th>
+				<th class="moving-images"><a href="#"></a><img src="./img/rat.png" alt="Default Rat" width="100" height="100"></a></th>
+				<th class="moving-images"><a href="#"></a><img src="./img/countryrat.png" alt="Country Rat" width="100" height="100"></a></th>
+				<th class="moving-images"><a href="#"></a><img src="./img/hiphoprat.png" alt="Hip Hop Rat" width="100" height="100"></a></th>
 			</tr>
 			<tr>
-				<th>Description: bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop</th>
-				<th>Description: bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop</th>
-				<th>Description: bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop</th>
-			</tr>
-			<tr>
-				<th></th>
-				<th></th>
-				<th></th>
-			</tr>
-			<tr>
-				<th class="moving-images"><img src="./img/rockrat.png" alt="Rock Rat" width="100" height="100"></th>
-				<th class="moving-images"><img src="./img/poprat.png" alt="Space Rat" width="100" height="100"></th>
-				<th class="moving-images"><img src="./img/jazzrat.png" alt="Jazz Rat" width="100" height="100"></th>
-			</tr>
-			<tr>
-				<th>Description: bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop</th>
-				<th>Description: bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop</th>
-				<th>Description: bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop</th>
+				<th>Description: Catch me and you can unlock all the musical rats. </th>
+				<th>Description: Catch me and you can become the country cat.</th>
+				<th>Description: Catch me and you can become the hiphop cat. </th>
 			</tr>
 			<tr>
 				<th></th>
-				<th class="moving-images"><img src="./img/nyanrat.png" alt="Nyan Rat" width="100" height="100"></th>
+				<th></th>
+				<th></th>
+			</tr>
+			<tr>
+				<th class="moving-images"><a href="#"></a><img src="./img/rockrat.png" alt="Rock Rat" width="100" height="100"></a></th>
+				<th class="moving-images"><a href="#"></a><img src="./img/poprat.png" alt="Space Rat" width="100" height="100"></a></th>
+				<th class="moving-images"><a href="#"></a><img src="./img/jazzrat.png" alt="Jazz Rat" width="100" height="100"></a></th>
+			</tr>
+			<tr>
+				<th>Description: Catch me and you can rock and roll all night.</th>
+				<th>Description: Catch me and you become a pop cat. </th>
+				<th>Description: Catch me and you become a jazzy cat. </th>
 			</tr>
 			<tr>
 				<th></th>
-				<th>Description: bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop bloop</th>
+				<th class="moving-images"><a href="#"></a><img src="./img/nyanrat.png" alt="Nyan Rat" width="100" height="100"></a></th>
+			</tr>
+			<tr>
+				<th></th>
+				<th>Description: I'm the final cat, catch me and you'll become the nyan cat. </th>
 				<th></th>
 			</tr>
 		</table>
-
-		<nav id="links">
-			<ul>
-				<li><a href="FinalProject/index.html">Final Project</a></li>		
-			</ul>
-		</nav>
 	</main>
+
+	<script>
+        function toggleSound(soundId) {
+            var audio = document.getElementById(soundId);
+            if (audio.paused) {
+                audio.currentTime = 0; // Set current time to 0 to replay from the beginning
+                audio.play();
+            } else {
+                audio.pause();
+            }
+        }
+
+		function toggleTable(category) {
+            var table = document.getElementById(category + 'Table');
+            if (table.style.display === "none") {
+                table.style.display = "block";
+            } else {
+                table.style.display = "none";
+            }
+        }
+
+		function navigateTo(url) {
+            window.location.href = url;
+        }
+
+    </script>
 </body>
 </html>
 
