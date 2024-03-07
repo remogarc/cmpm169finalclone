@@ -16,6 +16,17 @@ let ratDead = false;
 let ratsCaught = [];
 let particles = [];
 
+const rainbowColors = [
+  '#FF0000',
+  '#FF7F00',
+  '#FFFF00',
+  '#00FF00',
+  '#0000FF',
+  '#4B0082',
+  '#9400D3'
+];
+
+let colorCount = 2;
 
 function preload() {
   let regCatImg = loadImage("../img/cat.png");
@@ -194,6 +205,8 @@ function draw() {
 
     ratDead = true;
     setTimeout(delayRespawn, 3000);
+
+    colorCount = Math.min(colorCount + 1, rainbowColors.length);
   }
 
   updateAndDisplayTrail();
@@ -201,6 +214,7 @@ function draw() {
 
 function delayRespawn() {
   rat.respawn();
+  ratDead = false;
 }
 
 class Animal {
@@ -372,25 +386,17 @@ function Particle(x, y, vx, vy, color) {
 }
 
 function updateAndDisplayTrail() {
-  const rainbowColors = [
-    '#FF0000',
-    '#FF7F00',
-    '#FFFF00',
-    '#00FF00',
-    '#0000FF',
-    '#4B0082',
-    '#9400D3'
-  ];
 
-  // trail offset to cat adjust as needed
+  // check the trail offset - change as NEEDED
   let trailXOffset = cat.speedX < 0 ? 50 : -50; 
 
-  for (let i = 0; i < rainbowColors.length; i++) {
-    let color = rainbowColors[i];
 
-    // Create a line of particles for each color
-    for (let j = 0; j < 5; j++) {
+  for (let i = 0; i < colorCount; i++) {
+    let color = rainbowColors[i % rainbowColors.length];
     
+    // color count
+    for (let j = 0; j < 5; j++) {
+     
       let x = cat.x - canvasW / 2 + trailXOffset;
       let y = cat.y - canvasH / 2 + (i * 10 - rainbowColors.length / 2 * 10);
 
