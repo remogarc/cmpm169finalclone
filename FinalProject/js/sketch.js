@@ -17,8 +17,38 @@ let ratDead = false;
 let ratsCaught = [];
 let particles = [];
 
-const rainbowColors = [
-  '#FF0000',
+var drawRainbow = function(shift) {
+  var red = color(255, 10, 10);
+  var orange = color(255, 111, 0);
+  var yellow = color(255, 255, 0);
+  var green = color(0, 255, 0);
+  var blue = color(0, 136, 255);
+  var purple = color(145, 48, 255);
+
+  scale(nyanscale,nyanscale);
+  translate(0,nyany);
+  
+  strokeWeight(20);
+  drawRainbowStreak(shift, red, 125);
+  drawRainbowStreak(shift, orange, 145);
+  drawRainbowStreak(shift, yellow, 165);
+  drawRainbowStreak(shift, green, 185);
+  drawRainbowStreak(shift, blue, 205);
+  drawRainbowStreak(shift, purple, 225);
+  resetMatrix();
+};
+
+let drawStars = function(state, dx) {
+  stroke(255, 255, 255);
+  drawStar(state, 400 - (dx % 400), 30);
+  drawStar((state + 2) % 4, 400 - ((dx + 100) % 400), 100);
+  drawStar((state + 1) % 4, 400 - ((dx - 60) % 400), 150);
+  drawStar((state + 3) % 4, 400 - ((dx + 200) % 400), 230);
+  drawStar((state + 2), 400 - ((dx + 300) % 400), 290);
+  drawStar((state + 1), 400 - ((dx - 175) % 400), 370);
+};
+
+let colorScheme = ['#FF0000',
   '#FF7F00',
   '#FFFF00',
   '#00FF00',
@@ -26,8 +56,6 @@ const rainbowColors = [
   '#4B0082',
   '#9400D3'
 ];
-
-let colorCount = 2;
 
 function preload() {
   let regCatImg = loadImage("../img/cat.png");
@@ -214,15 +242,13 @@ function draw() {
 
     ratDead = true;
     setTimeout(delayRespawn, 3000);
-
-    colorCount = Math.min(colorCount + 1, rainbowColors.length);
   }
 
   updateAndDisplayTrail();
 }
 
 function delayRespawn() {
-  rat.respawn(cat.x, cat.y);
+  rat.respawn();
 }
 
 class Animal {
@@ -387,12 +413,12 @@ class Asteroid {
   }
 }
 
-function Particle(x, y, vx, vy, color) {
+function Particle(x, y, vx, vy) {
   this.pos = createVector(x, y);
   this.vel = createVector(vx, vy);
   this.acc = createVector(0, 0);
   this.lifespan = 255;
-  this.color = color;
+  this.color = random(colorScheme);
 
   this.update = function () {
     this.vel.add(this.acc);
@@ -414,23 +440,19 @@ function Particle(x, y, vx, vy, color) {
 }
 
 function updateAndDisplayTrail() {
+  let direction = createVector(cat.x - cat.prevX, cat.y - cat.prevY);
+  direction.normalize();
 
-  // check the trail offset - change as NEEDED
-  let trailXOffset = cat.speedX < 0 ? 50 : -50; 
+  // Invert the direction if the cat is moving to the right
+  if (cat.speedX > 0) {
+    direction.mult(-1);
+  }
 
-
-  for (let i = 0; i < colorCount; i++) {
-    let color = rainbowColors[i % rainbowColors.length];
-    
-    // color count
-    for (let j = 0; j < 5; j++) {
-     
-      let x = cat.x - canvasW / 2 + trailXOffset;
-      let y = cat.y - canvasH / 2 + (i * 10 - rainbowColors.length / 2 * 10);
-
-      let speed = 2;
-      particles.push(new Particle(x, y, cat.speedX < 0 ? speed : -speed, 0, color));
-    }
+  for (let i = 0; i < 5; i++) {
+    let angle = direction.heading() + random(-PI / 6, PI / 6);
+    let speed = random(3, 8);
+    // Create particle with zero vertical velocity
+    particles.push(new Particle(cat.x - canvasW / 2, cat.y - canvasH / 2, cos(angle) * speed, 0));
   }
 
   for (let i = particles.length - 1; i >= 0; i--) {
