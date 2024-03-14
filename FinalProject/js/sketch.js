@@ -405,8 +405,6 @@ function Particle(x, y, vx, vy, color) {
 
   this.update = function () {
     this.vel.add(this.acc);
-    // Lock vertical movement
-    this.vel.y = 0;
     this.pos.add(this.vel);
     this.lifespan -= 4;
   };
