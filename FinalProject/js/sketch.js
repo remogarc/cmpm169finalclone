@@ -17,38 +17,8 @@ let ratDead = false;
 let ratsCaught = [];
 let particles = [];
 
-var drawRainbow = function(shift) {
-  var red = color(255, 10, 10);
-  var orange = color(255, 111, 0);
-  var yellow = color(255, 255, 0);
-  var green = color(0, 255, 0);
-  var blue = color(0, 136, 255);
-  var purple = color(145, 48, 255);
-
-  scale(nyanscale,nyanscale);
-  translate(0,nyany);
-  
-  strokeWeight(20);
-  drawRainbowStreak(shift, red, 125);
-  drawRainbowStreak(shift, orange, 145);
-  drawRainbowStreak(shift, yellow, 165);
-  drawRainbowStreak(shift, green, 185);
-  drawRainbowStreak(shift, blue, 205);
-  drawRainbowStreak(shift, purple, 225);
-  resetMatrix();
-};
-
-let drawStars = function(state, dx) {
-  stroke(255, 255, 255);
-  drawStar(state, 400 - (dx % 400), 30);
-  drawStar((state + 2) % 4, 400 - ((dx + 100) % 400), 100);
-  drawStar((state + 1) % 4, 400 - ((dx - 60) % 400), 150);
-  drawStar((state + 3) % 4, 400 - ((dx + 200) % 400), 230);
-  drawStar((state + 2), 400 - ((dx + 300) % 400), 290);
-  drawStar((state + 1), 400 - ((dx - 175) % 400), 370);
-};
-
-let colorScheme = ['#FF0000',
+const rainbowColors = [
+  '#FF0000',
   '#FF7F00',
   '#FFFF00',
   '#00FF00',
@@ -56,6 +26,8 @@ let colorScheme = ['#FF0000',
   '#4B0082',
   '#9400D3'
 ];
+
+let colorCount = 2;
 
 function preload() {
   let regCatImg = loadImage("../img/cat.png");
@@ -242,6 +214,8 @@ function draw() {
 
     ratDead = true;
     setTimeout(delayRespawn, 3000);
+
+    colorCount = Math.min(colorCount + 1, rainbowColors.length);
   }
 
   updateAndDisplayTrail();
@@ -249,6 +223,7 @@ function draw() {
 
 function delayRespawn() {
   rat.respawn();
+  ratDead = false;
 }
 
 class Animal {
@@ -421,17 +396,15 @@ class Asteroid {
   }
 }
 
-function Particle(x, y, vx, vy) {
+function Particle(x, y, vx, vy, color) {
   this.pos = createVector(x, y);
   this.vel = createVector(vx, vy);
   this.acc = createVector(0, 0);
   this.lifespan = 255;
-  this.color = random(colorScheme);
+  this.color = color;
 
   this.update = function () {
     this.vel.add(this.acc);
-    // Lock vertical movement
-    this.vel.y = 0;
     this.pos.add(this.vel);
     this.lifespan -= 4;
   };
