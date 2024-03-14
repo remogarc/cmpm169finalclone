@@ -72,6 +72,11 @@ function preload() {
   let rockratImg = loadImage("../img/rockrat.png");
   let hiphopRatImg = loadImage("../img/hiphoprat.png");
   let nyanRatImg = loadImage("../img/nyanrat.png")
+  let rathead = loadImage("../img/ratHead.png");
+  let ratBone1 = loadImage("../img/ratBone1.png");
+  let ratBone2 = loadImage("../img/ratBone2.png");
+  let ratBone3 = loadImage("../img/ratBone3.png");
+  let ratBone4 = loadImage("../img/ratBone4.png");
 
   let spaceMusic = loadSound("../music/space.mp3");
   let jazzMusic = loadSound("../music/jazz.mp3");
