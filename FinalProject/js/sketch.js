@@ -222,8 +222,7 @@ function draw() {
 }
 
 function delayRespawn() {
-  rat.respawn();
-  ratDead = false;
+  rat.respawn(cat.x, cat.y);
 }
 
 class Animal {
@@ -274,7 +273,7 @@ class Animal {
     return distanceSq <= minDistSq;
   }
 
-  respawn() {
+  respawn(catX, catY) {
     let oldRatType = Object.keys(ratInfo).find(type => ratInfo[type]["id"] === this.id);
     let oldCatType = Object.keys(catInfo).find(type => catInfo[type]["id"] === cat.id);
     let oldMusic = catInfo[oldCatType]["music"];
@@ -307,6 +306,24 @@ class Animal {
     let newMusic = catInfo[newCatType]["music"];
     newMusic.play();
     newMusic.setLoop(true);
+
+    let newX, newY;
+    const boundaryX = canvasW - animalWidth; // Define boundaries based on canvas width and asset width
+    const boundaryY = canvasH - animalHeight; // Define boundaries based on canvas height and asset height
+    const minDistance = 1000; // Minimum distance to maintain between assets
+    newX = random(boundaryX);
+    newY = random(boundaryY);
+    let distance = dist(newX, newY, catX, catY);
+
+    while (distance < minDistance) {
+      newX = random(boundaryX);
+      newY = random(boundaryY);
+      distance = dist(newX, newY, catX, catY); 
+    }
+        
+    // Set asset's position
+    this.x = newX;
+    this.y = newY;
   }
 
 }
