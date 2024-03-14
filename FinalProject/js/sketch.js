@@ -404,6 +404,8 @@ function Particle(x, y, vx, vy) {
 
   this.update = function () {
     this.vel.add(this.acc);
+    // Lock vertical movement
+    this.vel.y = 0;
     this.pos.add(this.vel);
     this.lifespan -= 4;
   };
@@ -420,13 +422,19 @@ function Particle(x, y, vx, vy) {
 }
 
 function updateAndDisplayTrail() {
-  let direction = createVector(cat.x - cat.prevX, cat.y - cat.prevY).mult(-1);
+  let direction = createVector(cat.x - cat.prevX, cat.y - cat.prevY);
   direction.normalize();
+
+  // Invert the direction if the cat is moving to the right
+  if (cat.speedX > 0) {
+    direction.mult(-1);
+  }
 
   for (let i = 0; i < 5; i++) {
     let angle = direction.heading() + random(-PI / 6, PI / 6);
     let speed = random(3, 8);
-    particles.push(new Particle(cat.x - canvasW / 2, cat.y - canvasH / 2, cos(angle) * speed, sin(angle) * speed));
+    // Create particle with zero vertical velocity
+    particles.push(new Particle(cat.x - canvasW / 2, cat.y - canvasH / 2, cos(angle) * speed, 0));
   }
 
   for (let i = particles.length - 1; i >= 0; i--) {
