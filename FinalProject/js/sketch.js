@@ -17,8 +17,38 @@ let ratDead = false;
 let ratsCaught = [];
 let particles = [];
 
-const rainbowColors = [
-  '#FF0000',
+var drawRainbow = function(shift) {
+  var red = color(255, 10, 10);
+  var orange = color(255, 111, 0);
+  var yellow = color(255, 255, 0);
+  var green = color(0, 255, 0);
+  var blue = color(0, 136, 255);
+  var purple = color(145, 48, 255);
+
+  scale(nyanscale,nyanscale);
+  translate(0,nyany);
+  
+  strokeWeight(20);
+  drawRainbowStreak(shift, red, 125);
+  drawRainbowStreak(shift, orange, 145);
+  drawRainbowStreak(shift, yellow, 165);
+  drawRainbowStreak(shift, green, 185);
+  drawRainbowStreak(shift, blue, 205);
+  drawRainbowStreak(shift, purple, 225);
+  resetMatrix();
+};
+
+let drawStars = function(state, dx) {
+  stroke(255, 255, 255);
+  drawStar(state, 400 - (dx % 400), 30);
+  drawStar((state + 2) % 4, 400 - ((dx + 100) % 400), 100);
+  drawStar((state + 1) % 4, 400 - ((dx - 60) % 400), 150);
+  drawStar((state + 3) % 4, 400 - ((dx + 200) % 400), 230);
+  drawStar((state + 2), 400 - ((dx + 300) % 400), 290);
+  drawStar((state + 1), 400 - ((dx - 175) % 400), 370);
+};
+
+let colorScheme = ['#FF0000',
   '#FF7F00',
   '#FFFF00',
   '#00FF00',
@@ -26,8 +56,6 @@ const rainbowColors = [
   '#4B0082',
   '#9400D3'
 ];
-
-let colorCount = 2;
 
 function preload() {
   let regCatImg = loadImage("../img/cat.png");
@@ -214,8 +242,6 @@ function draw() {
 
     ratDead = true;
     setTimeout(delayRespawn, 3000);
-
-    colorCount = Math.min(colorCount + 1, rainbowColors.length);
   }
 
   updateAndDisplayTrail();
@@ -223,7 +249,6 @@ function draw() {
 
 function delayRespawn() {
   rat.respawn();
-  ratDead = false;
 }
 
 class Animal {
@@ -274,7 +299,7 @@ class Animal {
     return distanceSq <= minDistSq;
   }
 
-  respawn() {
+  respawn(catX, catY) {
     let oldRatType = Object.keys(ratInfo).find(type => ratInfo[type]["id"] === this.id);
     let oldCatType = Object.keys(catInfo).find(type => catInfo[type]["id"] === cat.id);
     let oldMusic = catInfo[oldCatType]["music"];
@@ -307,6 +332,24 @@ class Animal {
     let newMusic = catInfo[newCatType]["music"];
     newMusic.play();
     newMusic.setLoop(true);
+
+    let newX, newY;
+    const boundaryX = canvasW - animalWidth; // Define boundaries based on canvas width and asset width
+    const boundaryY = canvasH - animalHeight; // Define boundaries based on canvas height and asset height
+    const minDistance = 1000; // Minimum distance to maintain between assets
+    newX = random(boundaryX);
+    newY = random(boundaryY);
+    let distance = dist(newX, newY, catX, catY);
+
+    while (distance < minDistance) {
+      newX = random(boundaryX);
+      newY = random(boundaryY);
+      distance = dist(newX, newY, catX, catY); 
+    }
+        
+    // Set asset's position
+    this.x = newX;
+    this.y = newY;
   }
 
 }
@@ -334,11 +377,19 @@ class Asteroid {
       this.y += this.speedY * 0.25; // Adjust the speed as needed HERE
 
       // Bounce off the edges
-      if (this.x + asteroidWidth / 4 >= canvasW || this.x - asteroidWidth / 4 <= 0) {
-        this.speedX *= -1;
+      if (this.x + asteroidWidth / 4 >= canvasW +200) {
+        //this.speedX *= -1;
+        this.x = -100;
       }
-      if (this.y + asteroidHeight / 4 >= canvasH || this.y - asteroidHeight / 4 <= 0) {
-        this.speedY *= -1;
+      else if(this.x - asteroidWidth / 4  <= -200){
+        this.x = canvasW +100;
+      }
+      if (this.y + asteroidHeight / 4  >= canvasH +200 ) {
+        //this.speedY *= -1;
+        this.y = -100
+      }
+      else if(this.y - asteroidHeight / 4  <= -200){
+        this.y = canvasH + 100;
       }
     } else {
       this.speedX = 0;
@@ -370,12 +421,12 @@ class Asteroid {
   }
 }
 
-function Particle(x, y, vx, vy, color) {
+function Particle(x, y, vx, vy) {
   this.pos = createVector(x, y);
   this.vel = createVector(vx, vy);
   this.acc = createVector(0, 0);
   this.lifespan = 255;
-  this.color = color;
+  this.color = random(colorScheme);
 
   this.update = function () {
     this.vel.add(this.acc);
