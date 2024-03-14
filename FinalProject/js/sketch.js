@@ -167,9 +167,9 @@ function setup() {
   catInfo.regCat.music.setLoop(true);
 
   // Create multiple asteroids
-  for (let i = 0; i < 15; i++) {
-    let asteroidX = random(canvasW) - canvasW / 2;
-    let asteroidY = random(canvasH) - canvasH / 2;
+  for (let i = 0; i < 30; i++) {
+    let asteroidX = random(canvasW) - canvasW / 2 ;
+    let asteroidY = random(canvasH) - canvasH / 2 ;
     asteroids.push(new Asteroid(asteroidX, asteroidY, asteroid));
   }
 }
@@ -267,14 +267,13 @@ class Animal {
 
     this.prevX = this.x;
     this.prevY = this.y;
-
     // Bounce off the edges
-    if (this.x + animalWidth / 4 >= canvasW || this.x - animalWidth / 4 <= 0) {
-      this.speedX *= -1;
-    }
-    if (this.y + animalHeight / 4 >= canvasH || this.y - animalHeight / 4 <= 0) {
-      this.speedY *= -1;
-    }
+      if (this.x + animalWidth / 4 >= canvasW || this.x - animalWidth / 4 <= 0) {
+        this.speedX *= -1;
+      }
+      if (this.y + animalHeight / 4 >= canvasH || this.y - animalHeight / 4 <= 0) {
+        this.speedY *= -1;
+      }
   }
 
   // Display animal
@@ -347,19 +346,27 @@ class Asteroid {
   update() {
     if (!this.paused) {
       if (this.speedX == 0) {
-        this.speedX = random(possibleSpeeds);
-        this.speedY = random(possibleSpeeds);
+        this.speedX = random(possibleSpeeds) +10;
+        this.speedY = random(possibleSpeeds) +10;
       }
 
       this.x += this.speedX * 0.25; // Adjust the speed as needed HERE
       this.y += this.speedY * 0.25; // Adjust the speed as needed HERE
 
       // Bounce off the edges
-      if (this.x + asteroidWidth / 4 >= canvasW || this.x - asteroidWidth / 4 <= 0) {
-        this.speedX *= -1;
+      if (this.x + asteroidWidth / 4 >= canvasW +200) {
+        //this.speedX *= -1;
+        this.x = -100;
       }
-      if (this.y + asteroidHeight / 4 >= canvasH || this.y - asteroidHeight / 4 <= 0) {
-        this.speedY *= -1;
+      else if(this.x - asteroidWidth / 4  <= -200){
+        this.x = canvasW +100;
+      }
+      if (this.y + asteroidHeight / 4  >= canvasH +200 ) {
+        //this.speedY *= -1;
+        this.y = -100
+      }
+      else if(this.y - asteroidHeight / 4  <= -200){
+        this.y = canvasH + 100;
       }
     } else {
       this.speedX = 0;
