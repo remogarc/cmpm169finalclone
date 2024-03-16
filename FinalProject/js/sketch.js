@@ -17,7 +17,7 @@ let ratsCaught = [];
 let particles = [];
 let nyanVideo;
 let timer = 3;
-let videoPlay = true;
+let videoPlay = false;
 
 let colorScheme = ['#FF0000',
   '#FF7F00',
@@ -105,7 +105,7 @@ function setup() {
   }
 
     // Create a video element
-    nyanVideo = createVideo('/assets/video.mp4');
+    nyanVideo = createVideo('/img/video.mp4');
   
     // Hide the video element
     nyanVideo.hide();
@@ -113,73 +113,79 @@ function setup() {
 }
 
 function draw() {
-  image(backgroundImage, 0, 0);
-  imageMode(CENTER);
+  if (videoPlay == false)
+  {
+    image(backgroundImage, 0, 0);
+    imageMode(CENTER);
 
-  // Update and display animals
-  if (!ratDead) {
-    rat.update();
-    rat.display();
-  }
-
-  cat.update();
-  cat.display();
-
-  // Update and display asteroids
-  for (let i = 0; i < asteroids.length; i++) {
-    asteroids[i].update();
-    asteroids[i].display();
-
-    // Check for mouse interaction
-    if (asteroids[i].isMouseOver() && mouseIsPressed) {
-      asteroids[i].dragging = true;
-      asteroids[i].offsetX = asteroids[i].x - mouseX;
-      asteroids[i].offsetY = asteroids[i].y - mouseY;
+    // Update and display animals
+    if (!ratDead) {
+      rat.update();
+      rat.display();
     }
 
-    if (asteroids[i].dragging) {
-      asteroids[i].x = mouseX + asteroids[i].offsetX;
-      asteroids[i].y = mouseY + asteroids[i].offsetY;
-    }
-    // Stop dragging when mouse is released
-    if (!mouseIsPressed) {
-      asteroids[i].dragging = false; 
-    }
-
-    // Check for collision with the cat
-    if (cat.intersects(asteroids[i])) {
-      // Invert the cat's direction
-      cat.speedX *= -1;
-      cat.speedY *= -1;
-
-      // Invert the asteroid's direction
-      asteroids[i].speedX *= -1;
-      asteroids[i].speedY *= -1;
-    }
-  }
-
-  // On collision, change cat direction and respawn new rat
-  if (!ratDead && cat.intersects(rat)) {
-    cat.speedX *= -1;
-    cat.speedY *= -1;
+    cat.update();
     cat.display();
 
-    ratDead = true;
-    setTimeout(delayRespawn, 3000);
-  }
+    // Update and display asteroids
+    for (let i = 0; i < asteroids.length; i++) {
+      asteroids[i].update();
+      asteroids[i].display();
 
-  updateAndDisplayTrail();
+      // Check for mouse interaction
+      if (asteroids[i].isMouseOver() && mouseIsPressed) {
+        asteroids[i].dragging = true;
+        asteroids[i].offsetX = asteroids[i].x - mouseX;
+        asteroids[i].offsetY = asteroids[i].y - mouseY;
+      }
+
+      if (asteroids[i].dragging) {
+        asteroids[i].x = mouseX + asteroids[i].offsetX;
+        asteroids[i].y = mouseY + asteroids[i].offsetY;
+      }
+      // Stop dragging when mouse is released
+      if (!mouseIsPressed) {
+        asteroids[i].dragging = false; 
+      }
+
+      // Check for collision with the cat
+      if (cat.intersects(asteroids[i])) {
+        // Invert the cat's direction
+        cat.speedX *= -1;
+        cat.speedY *= -1;
+
+        // Invert the asteroid's direction
+        asteroids[i].speedX *= -1;
+        asteroids[i].speedY *= -1;
+      }
+    }
+
+    // On collision, change cat direction and respawn new rat
+    if (!ratDead && cat.intersects(rat)) {
+      cat.speedX *= -1;
+      cat.speedY *= -1;
+      cat.display();
+
+      ratDead = true;
+      setTimeout(delayRespawn, 3000);
+    }
+
+    updateAndDisplayTrail();
+  }
   if (cat.id == 3)
   {
     if (frameCount % 60 == 0 && timer > 0) { // if the frameCount is divisible by 60, then a second has passed. it will stop at 0
       timer --;
     }
-    if (timer == 0 && videoPlay == true) {
-      videoPlay = false;
-      image(nyanVideo, 0, 0, width, height);
-      nyanVideo.play();
+    if (timer == 0) {
+      videoPlay = true;
     }
 }
+  if(videoPlay == true)
+  {
+    image(nyanVideo, 0, 0, width, height);
+    nyanVideo.play();
+  }
 
 }
 
