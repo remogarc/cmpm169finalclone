@@ -15,6 +15,9 @@ let rat;
 let ratDead = false;
 let ratsCaught = [];
 let particles = [];
+let nyanVideo;
+let timer = 3;
+let videoPlay = true;
 
 let colorScheme = ['#FF0000',
   '#FF7F00',
@@ -100,6 +103,13 @@ function setup() {
     let asteroidY = random(canvasH) - canvasH / 2;
     asteroids.push(new Asteroid(asteroidX, asteroidY, asteroid));
   }
+
+    // Create a video element
+    nyanVideo = createVideo('/assets/video.mp4');
+  
+    // Hide the video element
+    nyanVideo.hide();
+  
 }
 
 function draw() {
@@ -159,6 +169,18 @@ function draw() {
   }
 
   updateAndDisplayTrail();
+  if (cat.id == 3)
+  {
+    if (frameCount % 60 == 0 && timer > 0) { // if the frameCount is divisible by 60, then a second has passed. it will stop at 0
+      timer --;
+    }
+    if (timer == 0 && videoPlay == true) {
+      videoPlay = false;
+      image(nyanVideo, 0, 0, width, height);
+      nyanVideo.play();
+    }
+}
+
 }
 
 function delayRespawn() {
