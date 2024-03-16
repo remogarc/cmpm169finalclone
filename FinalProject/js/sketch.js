@@ -16,6 +16,9 @@ let ratDeathSound
 let ratDead = false;
 let ratsCaught = [];
 let particles = [];
+let nyanVideo;
+let timer = 3;
+let videoPlay = false;
 
 const rainbowColors = [
   '#FF0000',
@@ -146,79 +149,99 @@ function setup() {
     let asteroidY = random(canvasH) - canvasH / 2;
     asteroids.push(new Asteroid(asteroidX, asteroidY, asteroid));
   }
+  // Create a video element
+  nyanVideo = createVideo('/img/video.mp4');
+
+  // Hide the video element
+  nyanVideo.hide();
 }
 
 function draw() {
-  image(backgroundImage, 0, 0);
-  imageMode(CENTER);
+  if (videoPlay == false) {
+    image(backgroundImage, 0, 0);
+    imageMode(CENTER);
 
-  // Update and display animals
-  if (!ratDead) {
-    rat.update();
-    rat.display();
-  }
-
-  cat.update();
-  cat.display();
-
-  // Update and display asteroids
-  for (let i = 0; i < asteroids.length; i++) {
-    asteroids[i].update();
-    asteroids[i].display();
-
-    // Check for mouse interaction
-    if (asteroids[i].isMouseOver() && mouseIsPressed) {
-      asteroids[i].dragging = true;
-      asteroids[i].offsetX = asteroids[i].x - mouseX;
-      asteroids[i].offsetY = asteroids[i].y - mouseY;
+    // Update and display animals
+    if (!ratDead) {
+      rat.update();
+      rat.display();
     }
 
-    if (asteroids[i].dragging) {
-      asteroids[i].x = mouseX + asteroids[i].offsetX;
-      asteroids[i].y = mouseY + asteroids[i].offsetY;
-    }
-    // Stop dragging when mouse is released
-    if (!mouseIsPressed) {
-      asteroids[i].dragging = false; 
+    cat.update();
+    cat.display();
+
+    // Update and display asteroids
+    for (let i = 0; i < asteroids.length; i++) {
+      asteroids[i].update();
+      asteroids[i].display();
+
+      // Check for mouse interaction
+      if (asteroids[i].isMouseOver() && mouseIsPressed) {
+        asteroids[i].dragging = true;
+        asteroids[i].offsetX = asteroids[i].x - mouseX;
+        asteroids[i].offsetY = asteroids[i].y - mouseY;
+      }
+
+      if (asteroids[i].dragging) {
+        asteroids[i].x = mouseX + asteroids[i].offsetX;
+        asteroids[i].y = mouseY + asteroids[i].offsetY;
+      }
+      // Stop dragging when mouse is released
+      if (!mouseIsPressed) {
+        asteroids[i].dragging = false;
+      }
+
+      // Check for collision with the cat
+      if (cat.intersects(asteroids[i])) {
+        // Invert the cat's direction
+        cat.speedX *= -1;
+        cat.speedY *= -1;
+
+        // Invert the asteroid's direction
+        asteroids[i].speedX *= -1;
+        asteroids[i].speedY *= -1;
+      }
+
+      if (rat.intersects(asteroids[i])) {
+        // Invert the cat's direction
+        rat.speedX *= -1;
+        rat.speedY *= -1;
+
+        // Invert the asteroid's direction
+        asteroids[i].speedX *= -1;
+        asteroids[i].speedY *= -1;
+      }
     }
 
-    // Check for collision with the cat
-    if (cat.intersects(asteroids[i])) {
-      // Invert the cat's direction
+    // On collision, change cat direction and respawn new rat
+    if (!ratDead && cat.intersects(rat)) {
       cat.speedX *= -1;
       cat.speedY *= -1;
+      cat.display();
+      ratDeathSound.play();
+      ratDeathSound.setLoop(false);
 
-      // Invert the asteroid's direction
-      asteroids[i].speedX *= -1;
-      asteroids[i].speedY *= -1;
+      ratDead = true;
+      setTimeout(delayRespawn, 3000);
+
+      colorCount = Math.min(colorCount + 1, rainbowColors.length);
     }
 
-    if (rat.intersects(asteroids[i])) {
-      // Invert the cat's direction
-      rat.speedX *= -1;
-      rat.speedY *= -1;
-
-      // Invert the asteroid's direction
-      asteroids[i].speedX *= -1;
-      asteroids[i].speedY *= -1;
+    updateAndDisplayTrail();
+  }
+  if (cat.id == 6) {
+    if (frameCount % 60 == 0 && timer > 0) { // if the frameCount is divisible by 60, then a second has passed. it will stop at 0
+      timer--;
+    }
+    if (timer == 0) {
+      videoPlay = true;
     }
   }
-
-  // On collision, change cat direction and respawn new rat
-  if (!ratDead && cat.intersects(rat)) {
-    cat.speedX *= -1;
-    cat.speedY *= -1;
-    cat.display();
-    ratDeathSound.play();
-    ratDeathSound.setLoop(false);
-
-    ratDead = true;
-    setTimeout(delayRespawn, 3000);
-
-    colorCount = Math.min(colorCount + 1, rainbowColors.length);
+  if (videoPlay == true) {
+    image(nyanVideo, 0, 0, width, height);
+    nyanVideo.play();
   }
 
-  updateAndDisplayTrail();
 }
 
 function delayRespawn() {
@@ -319,9 +342,9 @@ class Animal {
     while (distance < minDistance) {
       newX = random(boundaryX);
       newY = random(boundaryY);
-      distance = dist(newX, newY, catX, catY); 
+      distance = dist(newX, newY, catX, catY);
     }
-        
+
     // Set asset's position
     this.x = newX;
     this.y = newY;
@@ -352,18 +375,18 @@ class Asteroid {
       this.y += this.speedY * 0.25; // Adjust the speed as needed HERE
 
       // Bounce off the edges
-      if (this.x + asteroidWidth / 4 >= canvasW +200) {
+      if (this.x + asteroidWidth / 4 >= canvasW + 200) {
         //this.speedX *= -1;
         this.x = -100;
       }
-      else if(this.x - asteroidWidth / 4  <= -200){
-        this.x = canvasW +100;
+      else if (this.x - asteroidWidth / 4 <= -200) {
+        this.x = canvasW + 100;
       }
-      if (this.y + asteroidHeight / 4  >= canvasH +200 ) {
+      if (this.y + asteroidHeight / 4 >= canvasH + 200) {
         //this.speedY *= -1;
         this.y = -100
       }
-      else if(this.y - asteroidHeight / 4  <= -200){
+      else if (this.y - asteroidHeight / 4 <= -200) {
         this.y = canvasH + 100;
       }
     } else {
@@ -423,15 +446,15 @@ function Particle(x, y, vx, vy, color) {
 function updateAndDisplayTrail() {
 
   // check the trail offset - change as NEEDED
-  let trailXOffset = cat.speedX < 0 ? 50 : -50; 
+  let trailXOffset = cat.speedX < 0 ? 50 : -50;
 
 
   for (let i = 0; i < colorCount; i++) {
     let color = rainbowColors[i % rainbowColors.length];
-    
+
     // color count
     for (let j = 0; j < 5; j++) {
-     
+
       let x = cat.x - canvasW / 2 + trailXOffset;
       let y = cat.y - canvasH / 2 + (i * 10 - rainbowColors.length / 2 * 10);
 
