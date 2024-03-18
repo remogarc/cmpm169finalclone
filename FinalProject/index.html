@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 	<!-- This title is used for tabs and bookmarks -->
 	<title>Final Project: Musical Space Cat</title>
@@ -21,15 +22,59 @@
 	<script type="text/javascript" src="./js/project.js" DEFER></script>
 	<!-- Use me for a p5.js project -->
 	<script type="text/javascript" src="./js/sketch.js" DEFER></script>
+	<style>
+		body {
+            background-color: black;
+        }
+		.toggleButton {
+			position: relative;
+			background-color: transparent;
+			border: none;
+			padding: 0;
+			cursor: pointer;
+			width: 150px;
+			/* Adjust the width of the button */
+			height: 150px;
+			/* Adjust the height of the button */
+			background-size: cover;
+			/* Scale the background image to cover the entire button */
+			background-repeat: no-repeat;
+			/* Prevent the background image from repeating */
+			text-align: center;
+			/* Center the text horizontally and vertically */
+			color: rgb(255, 255, 255);
+			/* Text color */
+			font-size: 24px;
+			/* Font size of the text */
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			text-shadow: 2px 2px 0px #FF0000;
+			/* Font family */
+		}
+
+		/* Set background images for the buttons */
+		.toggleButton:nth-child(1) {
+			background-image: url('../img/rocketship.png');
+			/* Path to your first button image */
+		}
+		/* New style for the button with background image */
+		.toggleButton.backButton {
+        background-image: url('../img/rocketship.png');
+        /* Specify the path to your background image */
+        background-size: cover;
+        /* Cover the entire button with the background image */
+        background-repeat: no-repeat;
+        /* Prevent the background image from repeating */
+    }
+	</style>
 </head>
-<body>
-	<!-- Style this page by changing the CSS in ../css/site.css or css/experiment.css -->
-	<main id="content">
-		<nav id="links">
-			<ul>
-				<li><a href="../index.html">Home</a></li>
-			</ul>
-		</nav>
-	</main>
-</body>
+
+<header>
+	<!-- Your existing HTML content -->
+</header>
+
+<!-- Add a container for the canvas -->
+<div id="canvasContainer">
+	<!-- Canvas will be added dynamically -->
+</div>
+
 </html>

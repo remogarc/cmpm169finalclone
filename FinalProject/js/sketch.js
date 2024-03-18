@@ -12,42 +12,18 @@ let ratInfo = {};
 let backgroundImage;
 let cat;
 let rat;
+let ratDeathSound
 let ratDead = false;
 let ratsCaught = [];
 let particles = [];
+let nyanVideo;
+let timer = 3;
+let videoPlay = false;
+let backButton;
+let canvas;
 
-var drawRainbow = function(shift) {
-  var red = color(255, 10, 10);
-  var orange = color(255, 111, 0);
-  var yellow = color(255, 255, 0);
-  var green = color(0, 255, 0);
-  var blue = color(0, 136, 255);
-  var purple = color(145, 48, 255);
-
-  scale(nyanscale,nyanscale);
-  translate(0,nyany);
-  
-  strokeWeight(20);
-  drawRainbowStreak(shift, red, 125);
-  drawRainbowStreak(shift, orange, 145);
-  drawRainbowStreak(shift, yellow, 165);
-  drawRainbowStreak(shift, green, 185);
-  drawRainbowStreak(shift, blue, 205);
-  drawRainbowStreak(shift, purple, 225);
-  resetMatrix();
-};
-
-let drawStars = function(state, dx) {
-  stroke(255, 255, 255);
-  drawStar(state, 400 - (dx % 400), 30);
-  drawStar((state + 2) % 4, 400 - ((dx + 100) % 400), 100);
-  drawStar((state + 1) % 4, 400 - ((dx - 60) % 400), 150);
-  drawStar((state + 3) % 4, 400 - ((dx + 200) % 400), 230);
-  drawStar((state + 2), 400 - ((dx + 300) % 400), 290);
-  drawStar((state + 1), 400 - ((dx - 175) % 400), 370);
-};
-
-let colorScheme = ['#FF0000',
+const rainbowColors = [
+  '#FF0000',
   '#FF7F00',
   '#FFFF00',
   '#00FF00',
@@ -55,6 +31,8 @@ let colorScheme = ['#FF0000',
   '#4B0082',
   '#9400D3'
 ];
+
+let colorCount = 2;
 
 function preload() {
   let regCatImg = loadImage("../img/cat.png");
@@ -72,6 +50,11 @@ function preload() {
   let rockratImg = loadImage("../img/rockrat.png");
   let hiphopRatImg = loadImage("../img/hiphoprat.png");
   let nyanRatImg = loadImage("../img/nyanrat.png")
+  let rathead = loadImage("../img/ratHead.png");
+  let ratBone1 = loadImage("../img/ratBone1.png");
+  let ratBone2 = loadImage("../img/ratBone2.png");
+  let ratBone3 = loadImage("../img/ratBone3.png");
+  let ratBone4 = loadImage("../img/ratBone4.png");
 
   let spaceMusic = loadSound("../music/space.mp3");
   let jazzMusic = loadSound("../music/jazz.mp3");
@@ -80,6 +63,7 @@ function preload() {
   let rockMusic = loadSound("../music/rock.mp3");
   let hiphopMusic = loadSound("../music/hiphop.mp3");
   let nyanMusic = loadSound("../music/nyancat.mp3");
+  ratDeathSound = loadSound("../music/squek.mp3");
 
   catInfo.regCat = {
     image: regCatImg,
@@ -154,7 +138,12 @@ function preload() {
 
 // Set up the canvas
 function setup() {
-  createCanvas(canvasW, canvasH, WEBGL);
+  canvas = createCanvas(canvasW, canvasH, WEBGL);
+  canvas.parent("canvasContainer");
+  backButton = createButton('Go Back');
+  backButton.position(12, -25);
+  backButton.mousePressed(goToHomePage);
+  backButton.class('toggleButton backButton');
   rat = new Animal(-200, -200, ratInfo.regRat.image, 0);
   cat = new Animal(0, 0, catInfo.regCat.image, 0);
 
@@ -167,79 +156,109 @@ function setup() {
     let asteroidY = random(canvasH) - canvasH / 2;
     asteroids.push(new Asteroid(asteroidX, asteroidY, asteroid));
   }
+  // Create a video element
+  nyanVideo = createVideo('/img/video.mp4');
+
+  // Hide the video element
+  nyanVideo.hide();
+}
+
+function goToHomePage() {
+  window.location.href = "../index.html"; // Replace "index.html" with the path to your homepage
 }
 
 function draw() {
-  image(backgroundImage, 0, 0);
-  imageMode(CENTER);
+  if (videoPlay == false) {
+    image(backgroundImage, 0, 0);
+    imageMode(CENTER);
 
-  // Update and display animals
-  if (!ratDead) {
-    rat.update();
-    rat.display();
-  }
-
-  cat.update();
-  cat.display();
-
-  // Update and display asteroids
-  for (let i = 0; i < asteroids.length; i++) {
-    asteroids[i].update();
-    asteroids[i].display();
-
-    // Check for mouse interaction
-    if (asteroids[i].isMouseOver() && mouseIsPressed) {
-      asteroids[i].dragging = true;
-      asteroids[i].offsetX = asteroids[i].x - mouseX;
-      asteroids[i].offsetY = asteroids[i].y - mouseY;
+    // Update and display animals
+    if (!ratDead) {
+      rat.update();
+      rat.display();
     }
 
-    if (asteroids[i].dragging) {
-      asteroids[i].x = mouseX + asteroids[i].offsetX;
-      asteroids[i].y = mouseY + asteroids[i].offsetY;
-    }
-    // Stop dragging when mouse is released
-    if (!mouseIsPressed) {
-      asteroids[i].dragging = false; 
-    }
-
-    // Check for collision with the cat
-    if (cat.intersects(asteroids[i])) {
-      // Invert the cat's direction
-      cat.speedX *= -1;
-      cat.speedY *= -1;
-
-      // Invert the asteroid's direction
-      asteroids[i].speedX *= -1;
-      asteroids[i].speedY *= -1;
-    }
-
-    if (rat.intersects(asteroids[i])) {
-      // Invert the cat's direction
-      rat.speedX *= -1;
-      rat.speedY *= -1;
-
-      // Invert the asteroid's direction
-      asteroids[i].speedX *= -1;
-      asteroids[i].speedY *= -1;
-    }
-  }
-
-  // On collision, change cat direction and respawn new rat
-  if (!ratDead && cat.intersects(rat)) {
-    cat.speedX *= -1;
-    cat.speedY *= -1;
+    cat.update();
     cat.display();
 
-    ratDead = true;
-    setTimeout(delayRespawn, 3000);
+    // Update and display asteroids
+    for (let i = 0; i < asteroids.length; i++) {
+      asteroids[i].update();
+      asteroids[i].display();
+
+      // Check for mouse interaction
+      if (asteroids[i].isMouseOver() && mouseIsPressed) {
+        asteroids[i].dragging = true;
+        asteroids[i].offsetX = asteroids[i].x - mouseX;
+        asteroids[i].offsetY = asteroids[i].y - mouseY;
+      }
+
+      if (asteroids[i].dragging) {
+        asteroids[i].x = mouseX + asteroids[i].offsetX;
+        asteroids[i].y = mouseY + asteroids[i].offsetY;
+      }
+      // Stop dragging when mouse is released
+      if (!mouseIsPressed) {
+        asteroids[i].dragging = false;
+      }
+
+      // Check for collision with the cat
+      if (cat.intersects(asteroids[i])) {
+        // Invert the cat's direction
+        cat.speedX *= -1;
+        cat.speedY *= -1;
+
+        // Invert the asteroid's direction
+        asteroids[i].speedX *= -1;
+        asteroids[i].speedY *= -1;
+      }
+
+      if (rat.intersects(asteroids[i])) {
+        // Invert the cat's direction
+        rat.speedX *= -1;
+        rat.speedY *= -1;
+
+        // Invert the asteroid's direction
+        asteroids[i].speedX *= -1;
+        asteroids[i].speedY *= -1;
+      }
+    }
+
+    // On collision, change cat direction and respawn new rat
+    if (!ratDead && cat.intersects(rat)) {
+      cat.speedX *= -1;
+      cat.speedY *= -1;
+      cat.display();
+      ratDeathSound.play();
+      ratDeathSound.setLoop(false);
+
+      ratDead = true;
+      setTimeout(delayRespawn, 3000);
+
+      colorCount = Math.min(colorCount + 1, rainbowColors.length);
+    }
+
+    updateAndDisplayTrail();
+  }
+  if (cat.id == 6) {
+    if (frameCount % 60 == 0 && timer > 0) { // if the frameCount is divisible by 60, then a second has passed. it will stop at 0
+      timer--;
+    }
+    if (timer == 0) {
+      videoPlay = true;
+    }
+  }
+  if (videoPlay == true) {
+    image(nyanVideo, 0, 0, width, height);
+    nyanVideo.muted = true; 
+    nyanVideo.play();
   }
 
-  updateAndDisplayTrail();
 }
 
 function delayRespawn() {
   rat.respawn();
+  ratDead = false;
 }
 
 class Animal {
@@ -264,10 +283,10 @@ class Animal {
     this.prevY = this.y;
 
     // Bounce off the edges
-    if (this.x + animalWidth / 4 >= canvasW || this.x - animalWidth / 4 <= 0) {
+    if (this.x + animalWidth / 4 >= canvasW - 50 || this.x - animalWidth / 4 <= 0) {
       this.speedX *= -1;
     }
-    if (this.y + animalHeight / 4 >= canvasH || this.y - animalHeight / 4 <= 0) {
+    if (this.y + animalHeight / 4 >= canvasH - 40 || this.y - animalHeight / 4 <= 0) {
       this.speedY *= -1;
     }
   }
@@ -290,7 +309,7 @@ class Animal {
     return distanceSq <= minDistSq;
   }
 
-  respawn() {
+  respawn(catX, catY) {
     let oldRatType = Object.keys(ratInfo).find(type => ratInfo[type]["id"] === this.id);
     let oldCatType = Object.keys(catInfo).find(type => catInfo[type]["id"] === cat.id);
     let oldMusic = catInfo[oldCatType]["music"];
@@ -323,6 +342,18 @@ class Animal {
     let newMusic = catInfo[newCatType]["music"];
     newMusic.play();
     newMusic.setLoop(true);
+
+    const minDistance = 100; // Minimum distance to maintain between assets
+    let newX, newY;
+
+    do {
+      newX = random(canvasW - animalWidth) + animalWidth / 2; // Adjust to keep away from the border
+      newY = random(canvasH - animalHeight) + animalHeight / 2; // Adjust to keep away from the border
+    } while (dist(newX, newY, catX, catY) < minDistance || collidesWithAsteroid);
+
+    // Set asset's position
+    this.x = newX;
+    this.y = newY;
   }
 
 }
@@ -350,11 +381,19 @@ class Asteroid {
       this.y += this.speedY * 0.25; // Adjust the speed as needed HERE
 
       // Bounce off the edges
-      if (this.x + asteroidWidth / 4 >= canvasW || this.x - asteroidWidth / 4 <= 0) {
-        this.speedX *= -1;
+      if (this.x + asteroidWidth / 4 >= canvasW + 200) {
+        //this.speedX *= -1;
+        this.x = -100;
       }
-      if (this.y + asteroidHeight / 4 >= canvasH || this.y - asteroidHeight / 4 <= 0) {
-        this.speedY *= -1;
+      else if (this.x - asteroidWidth / 4 <= -200) {
+        this.x = canvasW + 100;
+      }
+      if (this.y + asteroidHeight / 4 >= canvasH + 200) {
+        //this.speedY *= -1;
+        this.y = -100
+      }
+      else if (this.y - asteroidHeight / 4 <= -200) {
+        this.y = canvasH + 100;
       }
     } else {
       this.speedX = 0;
@@ -386,12 +425,12 @@ class Asteroid {
   }
 }
 
-function Particle(x, y, vx, vy) {
+function Particle(x, y, vx, vy, color) {
   this.pos = createVector(x, y);
   this.vel = createVector(vx, vy);
   this.acc = createVector(0, 0);
   this.lifespan = 255;
-  this.color = random(colorScheme);
+  this.color = color;
 
   this.update = function () {
     this.vel.add(this.acc);
@@ -411,13 +450,23 @@ function Particle(x, y, vx, vy) {
 }
 
 function updateAndDisplayTrail() {
-  let direction = createVector(cat.x - cat.prevX, cat.y - cat.prevY).mult(-1);
-  direction.normalize();
 
-  for (let i = 0; i < 5; i++) {
-    let angle = direction.heading() + random(-PI / 6, PI / 6);
-    let speed = random(3, 8);
-    particles.push(new Particle(cat.x - canvasW / 2, cat.y - canvasH / 2, cos(angle) * speed, sin(angle) * speed));
+  // check the trail offset - change as NEEDED
+  let trailXOffset = cat.speedX < 0 ? 50 : -50;
+
+
+  for (let i = 0; i < colorCount; i++) {
+    let color = rainbowColors[i % rainbowColors.length];
+
+    // color count
+    for (let j = 0; j < 5; j++) {
+
+      let x = cat.x - canvasW / 2 + trailXOffset;
+      let y = cat.y - canvasH / 2 + (i * 10 - rainbowColors.length / 2 * 10);
+
+      let speed = 2;
+      particles.push(new Particle(x, y, cat.speedX < 0 ? speed : -speed, 0, color));
+    }
   }
 
   for (let i = particles.length - 1; i >= 0; i--) {
