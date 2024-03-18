@@ -19,6 +19,8 @@ let particles = [];
 let nyanVideo;
 let timer = 3;
 let videoPlay = false;
+let backButton;
+let canvas;
 
 const rainbowColors = [
   '#FF0000',
@@ -136,7 +138,12 @@ function preload() {
 
 // Set up the canvas
 function setup() {
-  createCanvas(canvasW, canvasH, WEBGL);
+  canvas = createCanvas(canvasW, canvasH, WEBGL);
+  canvas.parent("canvasContainer");
+  backButton = createButton('Go Back');
+  backButton.position(12, -25);
+  backButton.mousePressed(goToHomePage);
+  backButton.class('toggleButton backButton');
   rat = new Animal(-200, -200, ratInfo.regRat.image, 0);
   cat = new Animal(0, 0, catInfo.regCat.image, 0);
 
@@ -154,6 +161,10 @@ function setup() {
 
   // Hide the video element
   nyanVideo.hide();
+}
+
+function goToHomePage() {
+  window.location.href = "../index.html"; // Replace "index.html" with the path to your homepage
 }
 
 function draw() {
