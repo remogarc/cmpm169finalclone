@@ -250,6 +250,7 @@ function draw() {
   }
   if (videoPlay == true) {
     image(nyanVideo, 0, 0, width, height);
+    nyanVideo.muted = true; 
     nyanVideo.play();
   }
 
@@ -282,10 +283,10 @@ class Animal {
     this.prevY = this.y;
 
     // Bounce off the edges
-    if (this.x + animalWidth / 4 >= canvasW || this.x - animalWidth / 4 <= 0) {
+    if (this.x + animalWidth / 4 >= canvasW - 50 || this.x - animalWidth / 4 <= 0) {
       this.speedX *= -1;
     }
-    if (this.y + animalHeight / 4 >= canvasH || this.y - animalHeight / 4 <= 0) {
+    if (this.y + animalHeight / 4 >= canvasH - 40 || this.y - animalHeight / 4 <= 0) {
       this.speedY *= -1;
     }
   }
@@ -342,19 +343,13 @@ class Animal {
     newMusic.play();
     newMusic.setLoop(true);
 
+    const minDistance = 100; // Minimum distance to maintain between assets
     let newX, newY;
-    const boundaryX = canvasW - animalWidth; // Define boundaries based on canvas width and asset width
-    const boundaryY = canvasH - animalHeight; // Define boundaries based on canvas height and asset height
-    const minDistance = 1000; // Minimum distance to maintain between assets
-    newX = random(boundaryX);
-    newY = random(boundaryY);
-    let distance = dist(newX, newY, catX, catY);
 
-    while (distance < minDistance) {
-      newX = random(boundaryX);
-      newY = random(boundaryY);
-      distance = dist(newX, newY, catX, catY);
-    }
+    do {
+      newX = random(canvasW - animalWidth) + animalWidth / 2; // Adjust to keep away from the border
+      newY = random(canvasH - animalHeight) + animalHeight / 2; // Adjust to keep away from the border
+    } while (dist(newX, newY, catX, catY) < minDistance || collidesWithAsteroid);
 
     // Set asset's position
     this.x = newX;
