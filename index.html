@@ -14,7 +14,6 @@
     <!-- Experiment-specific CSS file for any special styling of this particular page -->
     <link rel="stylesheet" type="text/css" href="css/homepage.css">
     <!-- Link to javascript file - DEFER waits until all elements are rendered -->
-    <script type="text/javascript" src="./js/experiment.js"></script>
     <link rel="stylesheet" href="css/style.css">
     <style>
         body {
@@ -107,6 +106,7 @@
 
         <button class="toggleButton" onclick="toggleTable('cats')">Cats</button>
         <button class="toggleButton" onclick="toggleTable('rats')">Rats</button>
+        <button class="toggleButton" onclick="toggleTable('bones')">Bones</button>
         <button class="toggleButton" onclick="navigateTo('FinalProject/index.html')">Play</button>
 
         <table id="catsTable" class="categoryTable" style="width:100%">
@@ -207,7 +207,10 @@
             <tr>
                 <th></th>
                 <th class="moving-images"><a href="#"></a>
-                    <div class="popup" id="pop8">Jose Nadales:</div><img src="./img/nyanrat.png" alt="Nyan Rat"
+                    <div class="popup" id="pop8">Jose Nadales: Hi, my name is Jose Nadales (He/Him). I am currently in my last at UCSC studing CSGD. My 
+                        interests include playing video games, watching movies, and going to the gym. Prior to college, I never had any classes on computer science, 
+                        but I did have a computer lab class where they taught us Scratch. Since then, I've always wanted to learn how to code. 
+                    </div><img src="./img/nyanrat.png" alt="Nyan Rat"
                         width="100" height="100" onmousemove="showPopup('pop8')" onmouseout="hidePopup('pop8')"></a>
                 </th>
             </tr>
@@ -249,6 +252,30 @@
                     }
                 }
             </style>
+        </table>
+
+        <table id="bonesTable" class="categoryTable" style="width:100%"> 
+            <tr>
+                <th class="moving-images"><a href="#"></a><img src="./img/ratBone1.png" alt="RatBone1" width="100"
+                        height="100"></a></th>
+                <th class="moving-images"><a href="#"></a><img src="./img/ratBone2.png" alt="Ratbone2" width="100"
+                        height="100" onclick="toggleSound('country', this)"></a></th>
+                <th class="moving-images"><a href="#"></a><img src="./img/ratBone3.png" alt="RatBone3" width="100"
+                        height="100" onclick="toggleSound('hiphop', this)"></a></th>
+            </tr>
+
+            <tr>
+                <th></th>
+                <th class="moving-images"><a href="#"></a><img src="./img/ratBone4.png" alt="RatBone4" width="100"
+                        height="100" onclick="toggleSound('rock', this)"></a></th>
+                <th></th>
+            </tr>
+
+            <tr style="color: white;">
+                <th></th>
+                <th>These are my bones.</th>
+                <th></th>
+            </tr>
         </table>
     </header>
 
