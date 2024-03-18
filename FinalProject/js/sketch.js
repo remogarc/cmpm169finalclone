@@ -65,6 +65,10 @@ function preload() {
   let nyanMusic = loadSound("../music/nyancat.mp3");
   ratDeathSound = loadSound("../music/squek.mp3");
 
+  nyanVideo = createVideo('/img/video.mp4', function() {
+    videoLoaded = true;
+  });
+
   catInfo.regCat = {
     image: regCatImg,
     music: spaceMusic,
@@ -156,8 +160,6 @@ function setup() {
     let asteroidY = random(canvasH) - canvasH / 2;
     asteroids.push(new Asteroid(asteroidX, asteroidY, asteroid));
   }
-  // Create a video element
-  nyanVideo = createVideo('/img/video.mp4');
 
   // Hide the video element
   nyanVideo.hide();
@@ -248,7 +250,7 @@ function draw() {
       videoPlay = true;
     }
   }
-  if (videoPlay == true) {
+  if (videoPlay == true && videoLoaded) {
     image(nyanVideo, 0, 0, width, height);
     nyanVideo.muted = true; 
     nyanVideo.play();
