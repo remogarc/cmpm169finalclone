@@ -19,6 +19,7 @@ let particles = [];
 let nyanVideo;
 let timer = 3;
 let videoPlay = false;
+let videoLoaded = false;
 let backButton;
 let canvas;
 
